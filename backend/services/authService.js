@@ -1,5 +1,6 @@
 const pool = require('../config/db');
 const Joi = require("joi");
+const jwt = require('jsonwebtoken');
 
 function schemas (){
   const loginSchema = Joi.object({
@@ -76,7 +77,8 @@ function createAccessAndRefreshJwts(user) {
     );
     const refreshToken = jwt.sign(
         { userId: user.id },
-        process.env.REFRESH_TOKEN_SECRET
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: '7d' }
     );
     return { accessToken, refreshToken };
 }

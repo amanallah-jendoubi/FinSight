@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const ms = require ('ms');
 const { isValidRequest, findUserByEmail, createUser} = require('../services/authService');
 
 const register = async (req, res) => {

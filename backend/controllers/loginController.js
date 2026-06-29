@@ -6,11 +6,11 @@ const { createAccessAndRefreshJwts, findUserByEmail, saveRefreshToken, isValidRe
 
 
 const login = async (req, res)=>{
-    const { isValid, errors } = isValidRequest(req, 'signup');
+    const { isValid, errors } = isValidRequest(req, 'login');
     if (!isValid) {
         return res.status(400).json({ errors });
     }    
-    const user = findUserByEmail( req.body.email);
+    const user = await findUserByEmail( req.body.email);
     try {
         if (user && await bcrypt.compare(req.body.password, user.passwordhash)) {
             const { accessToken, refreshToken } = createAccessAndRefreshJwts(user);
