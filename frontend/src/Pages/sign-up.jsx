@@ -1,18 +1,23 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../Components/auth/Logo";
 import InputField from "../Components/auth/InputField";
 import PasswordField from "../Components/auth/PasswordField";
 import GoogleButton from "../Components/auth/GoogleButton";
 import Divider from "../Components/auth/Divider";
-
-
+import { signup } from '../api/endpoints/signup';
+import { useAuth } from "../context/AuthContext";
+import { setAxiosAccessToken } from '../api/axiosInstance';
 
 
 export default function SignUp() {
   const [form, setForm] = useState({
     name: "", email: "",  password: ""
   });
+  const [errors, setErrors] = useState ({});
+  const navigate = useNavigate();
+  const { setAccessToken } = useAuth();
+
 
   const set = (field) => (e) =>
     setForm((f) => ({ ...f, [field]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
@@ -20,16 +25,19 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post('/signup', {
+      const response = await signup({
         name: form.name,
         email: form.email,
         password: form.password,
       });
       const { accessToken } = response.data;
-      console.log(accessToken);
+      setAccessToken(accessToken);
+      setAxiosAccessToken(accessToken);
+      navigate("/"); // redirect to home
     } catch (err) {
-      
-    } 
+        if (err.response.data.errors) setErrors(err.response.data.errors); //name || email|| pwd fields either not set properly or misssed
+        else setErrors(err.response.data.message); //user already has an account 
+      } 
   };
 
   return (
@@ -118,6 +126,7 @@ export default function SignUp() {
                 placeholder="Enter your name"
                 value={form.name}
                 onChange={set("name")}
+                error={errors.name}
                 icon={
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
@@ -134,6 +143,7 @@ export default function SignUp() {
                   placeholder="Enter your email adress"
                   value={form.email}
                   onChange={set("email")}
+                  error={errors.email}
                   icon={
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
@@ -148,8 +158,15 @@ export default function SignUp() {
                 placeholder="Enter your password"
                 value={form.password}
                 onChange={set("password")}
+                error= {errors.password}
                 hint="At least 8 characters with letters and numbers."
               />
+              {/* Error message */}
+                {errors === 'user already has an account' && 
+                  <div className="rounded-lg bg-red-50 border border-red-200 px-3 py-2">
+                    <p className="text-xs text-red-600">{errors}</p>
+                  </div>
+                }
               {/* Submit */}
               <button
                 type="submit"
