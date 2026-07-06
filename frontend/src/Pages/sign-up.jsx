@@ -8,6 +8,7 @@ import Divider from "../Components/auth/Divider";
 
 
 
+
 export default function SignUp() {
   const [form, setForm] = useState({
     name: "", email: "",  password: ""
@@ -16,9 +17,19 @@ export default function SignUp() {
   const set = (field) => (e) =>
     setForm((f) => ({ ...f, [field]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    //submit info
+    try {
+      const response = await api.post('/signup', {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+      });
+      const { accessToken } = response.data;
+      console.log(accessToken);
+    } catch (err) {
+      
+    } 
   };
 
   return (
