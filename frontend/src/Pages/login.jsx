@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../Components/auth/Logo";
 import InputField from "../Components/auth/InputField";
 import PasswordField from "../Components/auth/PasswordField";
@@ -7,17 +7,35 @@ import GoogleButton from "../Components/auth/GoogleButton";
 import Divider from "../Components/auth/Divider";
 import ForgotPasswordLink from "../Components/auth/ForgotPasswordLink";
 import WelcomeBack from "../Components/auth/WelcomeBack";
-
+import {login} from "../api/endpoints/login";
+import { useAuth } from "../context/AuthContext";
+import { setAxiosAccessToken } from '../api/axiosInstance';
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState ({});
+  const { setAccessToken } = useAuth();
+  const navigate = useNavigate();
+
 
   const set = (field) => (e) =>
     setForm((f) => ({ ...f, [field]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // submit logic
+    try{
+      const response = await login({
+        email: form.email,
+        password: form.password
+      });
+      const { accessToken } = response.data;
+      setAccessToken(accessToken);
+      setAxiosAccessToken(accessToken);
+      navigate("/");
+    }catch (err) {
+      if (err.response.data.errors) setErrors(err.response.data.errors); //email|| pwd fields either not set properly or misssed
+      else setErrors(err.response.data.message); //please verify your credentials
+    }
   };
 
   return (
@@ -65,6 +83,7 @@ export default function Login() {
                 placeholder="Enter your email address"
                 value={form.email}
                 onChange={set("email")}
+                error={errors.email}
                 icon={
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -81,10 +100,17 @@ export default function Login() {
                   placeholder="Enter your password"
                   value={form.password}
                   onChange={set("password")}
+                  error={errors.name}
                 />
                 <ForgotPasswordLink />
               </div>
+              {/* Error message */}
+                {errors === 'please verify your credentials' && 
 
+                  <div className="rounded-lg bg-red-50 border border-red-200 px-3 py-2">
+                    <p className="text-xs text-red-600">{errors}</p>
+                  </div>
+                }
               {/* Submit */}
               <button
                 type="submit"
