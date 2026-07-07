@@ -6,7 +6,6 @@ import PasswordField from "../Components/auth/PasswordField";
 import GoogleButton from "../Components/auth/GoogleButton";
 import Divider from "../Components/auth/Divider";
 import { signup } from '../api/endpoints/signup';
-import { useAuth } from "../context/AuthContext";
 import { setAxiosAccessToken } from '../api/axiosInstance';
 
 
@@ -16,7 +15,6 @@ export default function SignUp() {
   });
   const [errors, setErrors] = useState ({});
   const navigate = useNavigate();
-  const { setAccessToken } = useAuth();
 
 
   const set = (field) => (e) =>
@@ -31,8 +29,7 @@ export default function SignUp() {
         password: form.password,
       });
       const { accessToken } = response.data;
-      setAccessToken(accessToken);
-      setAxiosAccessToken(accessToken);
+      setAxiosAccessToken(accessToken); //storing access token in memory 
       navigate("/"); // redirect to home
     } catch (err) {
         if (err.response.data.errors) setErrors(err.response.data.errors); //name || email|| pwd fields either not set properly or misssed

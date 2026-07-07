@@ -8,13 +8,11 @@ import Divider from "../Components/auth/Divider";
 import ForgotPasswordLink from "../Components/auth/ForgotPasswordLink";
 import WelcomeBack from "../Components/auth/WelcomeBack";
 import {login} from "../api/endpoints/login";
-import { useAuth } from "../context/AuthContext";
 import { setAxiosAccessToken } from '../api/axiosInstance';
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState ({});
-  const { setAccessToken } = useAuth();
   const navigate = useNavigate();
 
 
@@ -29,7 +27,6 @@ export default function Login() {
         password: form.password
       });
       const { accessToken } = response.data;
-      setAccessToken(accessToken);
       setAxiosAccessToken(accessToken);
       navigate("/");
     }catch (err) {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 let accessToken = null;
-export const setAxiosAccessToken = (token) => { accessToken = token; };
+export const setAxiosAccessToken = (token) => { accessToken = token; }; // update access token 
 
 const api = axios.create({
   baseURL: 'http://localhost:3500',
@@ -28,21 +28,12 @@ api.interceptors.response.use(
 
     if (gotRefreshedTokenInsteadOfData) {
       const originalRequest = response.config;
-
-      if (originalRequest._retry) {
-        // already retried once and got a token again — something's wrong server-side, stop here
-        return Promise.reject(new Error('Repeated token refresh without data'));
-      }
-      originalRequest._retry = true;
-
       setAxiosAccessToken(response.data.accessToken);
       originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
-
-      // Retry the ORIGINAL request now that the token is fresh
+      // Retry the ORIGINAL request now that the token is refreshed
       return api(originalRequest);
     }
-
-    return response; // normal response, pass through
+    return response; // normal response
   },
   (error) => Promise.reject(error)
 );

@@ -1,4 +1,4 @@
-const InputField = ({ label, id, type = "text", placeholder, icon, rightIcon, hint, value, onChange }) => (
+const InputField = ({ label, id, type = "text", placeholder, icon, rightIcon, hint, error, value, onChange }) => (
   <div className="flex flex-col gap-1">
     <label htmlFor={id} className="text-xs font-medium text-slate-500 uppercase tracking-widest">
       {label}
@@ -13,8 +13,9 @@ const InputField = ({ label, id, type = "text", placeholder, icon, rightIcon, hi
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className={`w-full bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400
-          focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-150
+        className={`w-full bg-slate-50 border rounded-xl text-sm text-slate-800 placeholder-slate-400
+          focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-150
+          ${error ? "border-red-400 focus:ring-red-400" : "border-slate-200 focus:ring-indigo-500"}
           ${icon ? "pl-10" : "pl-4"} ${rightIcon ? "pr-10" : "pr-4"} py-2.5`}
       />
       {rightIcon && (
@@ -23,7 +24,11 @@ const InputField = ({ label, id, type = "text", placeholder, icon, rightIcon, hi
         </span>
       )}
     </div>
-    {hint && <p className="text-[10px] text-slate-400 mt-0.5">{hint}</p>}
+    {error ? (
+      <p className="text-[10px] text-red-500 mt-0.5">{error}</p>
+    ) : (
+      hint && <p className="text-[10px] text-slate-400 mt-0.5">{hint}</p>
+    )}
   </div>
 );
 

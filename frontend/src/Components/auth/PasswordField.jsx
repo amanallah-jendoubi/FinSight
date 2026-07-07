@@ -1,7 +1,7 @@
 import { useState } from "react";
 import InputField from "./InputField";
 
-const PasswordField = ({ label, id, placeholder, value, onChange, hint }) => {
+const PasswordField = ({ label, id, placeholder, value, onChange, error, hint }) => {
   const [show, setShow] = useState(false);
   return (
     <InputField
@@ -12,6 +12,7 @@ const PasswordField = ({ label, id, placeholder, value, onChange, hint }) => {
       value={value}
       onChange={onChange}
       hint={hint}
+      error={error}
       icon={
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
