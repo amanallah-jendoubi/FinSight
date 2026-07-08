@@ -33,11 +33,11 @@ export default function TransactionsTable({ transactions }) {
                 <td className="py-2 pr-4 text-gray-500">{t.type}</td>
                 <td
                   className={`py-2 text-right font-medium ${
-                    t.isPositive ? "text-emerald-500" : "text-gray-900"
+                    t.type === 'income' ? "text-emerald-500" : "text-gray-900"
                   }`}
                 >
-                  {t.isPositive ? "+" : ""}
-                  {t.amount}
+                  {t.type === 'income' ? "+" : "-"}
+                  {t.amount} DT
                 </td>
               </tr>
             ))}
