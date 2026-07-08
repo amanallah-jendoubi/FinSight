@@ -84,18 +84,19 @@ async function createTransaction({ accountId, amount, date, description, type, s
 async function getAllTransactions(accountIds) {
   const query = `
     SELECT
-      t.id, t.amount, t.date, t.isAnomaly, t.description, t.accountId,
-      'expense' AS type,
+      t.id, t.amount, TO_CHAR(t.date, 'YYYY-MM-DD') AS date, t.isAnomaly, t.description, t.accountId,
+      'expense' AS type, c.name AS categoryName,
       e.categoryOverridden, e.categoryId, NULL AS source
     FROM "Transaction" t
     JOIN "Expense" e ON e.transactionId = t.id
+    JOIN "Category" c ON c.id = e.categoryId
     WHERE t.accountId = ANY($1)
 
     UNION ALL
 
     SELECT
-      t.id, t.amount, t.date, t.isAnomaly, t.description, t.accountId,
-      'income' AS type,
+      t.id, t.amount, TO_CHAR(t.date, 'YYYY-MM-DD') AS date, t.isAnomaly, t.description, t.accountId,
+      'income' AS type, NULL AS categoryName,
       NULL AS categoryOverridden, NULL AS categoryId, i.source
     FROM "Transaction" t
     JOIN "Income" i ON i.transactionId = t.id
@@ -124,6 +125,7 @@ async function getMonthExpense(accountIds) {
     SELECT COALESCE(SUM(t.amount), 0) AS total
     FROM "Transaction" t
     JOIN "Expense" e ON e.transactionId = t.id
+    JOIN "Category" c ON c.id = e.categoryId
     WHERE date_trunc('month', t.date) = date_trunc('month', CURRENT_DATE)
       AND t.accountId = ANY($1)
   `;
@@ -163,11 +165,43 @@ async function getTopCategories(accountIds, limit = 3) {
   const result = await pool.query(query, [accountIds, limit]);
 
   return result.rows.map(row => ({
-    categoryId: row.categoryid,
-    categoryName: row.categoryname,
-    totalSpent: parseFloat(row.totalspent)
+    name: row.categoryname,
+    amount: parseFloat(row.totalspent)
   }));
 }
+
+
+async function getMonthExpenseByCategory(accountIds) {
+  const query = `
+    WITH category_totals AS (
+      SELECT 
+        c.name AS name,
+        COALESCE(SUM(t.amount), 0) AS amount
+      FROM "Transaction" t
+      JOIN "Expense" e ON e.transactionId = t.id
+      JOIN "Category" c ON c.id = e.categoryId
+      WHERE date_trunc('month', t.date) = date_trunc('month', CURRENT_DATE)
+        AND t.accountId = ANY($1)
+      GROUP BY c.id, c.name
+    ),
+    total_sum AS (
+      SELECT SUM(amount) AS total FROM category_totals
+    )
+    SELECT 
+      ct.name,
+      ct.amount,
+      CASE 
+        WHEN ts.total > 0 THEN ROUND((ct.amount / ts.total) * 100, 2)
+        ELSE 0
+      END AS value
+    FROM category_totals ct
+    CROSS JOIN total_sum ts
+    ORDER BY ct.amount DESC
+  `;
+  const result = await pool.query(query, [accountIds]);
+  return result.rows; // Returns [{ name: 'Food', amount: 500, value : 45.45 }, ...]
+}
+
 
 
 
@@ -178,7 +212,8 @@ module.exports = {
   getMonthTransactionsCount,
   getMonthExpense,
   getMonthIncome,
-  getTopCategories
+  getTopCategories,
+  getMonthExpenseByCategory
 };
 
 

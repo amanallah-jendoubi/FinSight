@@ -1,17 +1,13 @@
 const bcrypt = require('bcrypt');
 const ms = require('ms');
-const { createAccessAndRefreshJwts, findUserByEmail, saveRefreshToken, isValidRequest } = require('../services/authService');
+const { createAccessAndRefreshJwts, findUserByEmail, saveRefreshToken } = require('../services/authService');
 
 
 
 
 const login = async (req, res)=>{
-    const { isValid, errors } = isValidRequest(req, 'login');
-    if (!isValid) {
-        return res.status(400).json({ errors });
-    }    
-    const user = await findUserByEmail( req.body.email);
-    try {
+    try{
+        const user = await findUserByEmail( req.body.email);
         if (user && await bcrypt.compare(req.body.password, user.passwordhash)) {
             const { accessToken, refreshToken } = createAccessAndRefreshJwts(user);
             await saveRefreshToken(user, refreshToken);

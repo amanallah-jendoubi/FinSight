@@ -7,10 +7,11 @@ router.get('/count', require('../controllers/transactionsController').getMonthTr
 router.get('/expense{/:accountId}', require('../controllers/transactionsController').getMonthExpense);  
 router.get('/income{/:accountId}', require('../controllers/transactionsController').getMonthIncome); 
 router.get('/categories/top', require('../controllers/transactionsController').getTopCategories);
+router.get('/categoriesPercentage', require('../controllers/transactionsController').getMonthExpenseByCategory );
 router.post('/:accountId', require('../controllers/transactionsController').createTransaction);
 
 
 
 
 
-module.exports = router ;
+module.exports = router;

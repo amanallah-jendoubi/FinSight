@@ -12,7 +12,7 @@ export default function ExpensesByCategoryCard({ data }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
       <h3 className="text-sm font-semibold text-gray-800 mb-4">
-        Répartition des dépenses par catégorie
+        Expense distribution by category
       </h3>
 
       <div className="flex items-center gap-6">
@@ -25,7 +25,7 @@ export default function ExpensesByCategoryCard({ data }) {
                 nameKey="name"
                 innerRadius="65%"
                 outerRadius="100%"
-                paddingAngle={2}
+                paddingAngle={data.length > 1 ? 2 : 0}                
                 stroke="none"
               >
                 {data.map((entry, i) => (

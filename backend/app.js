@@ -5,6 +5,13 @@ const PORT = process.env.PORT || 3500 ;
 //builtin middleware to handle url encoded data in requests
 app.use(express.urlencoded({extended: false})); 
 
+// cors
+const cors = require('cors');
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
+
 //built-in middleware for json requests
 app.use(express.json());
 
@@ -29,9 +36,14 @@ app.use(refreshToken);
 
 //protected routes 
 
-//home  
-app.use('/', require('./routes/root'));
+app.use ('/account', require('./routes/account'));
 app.use ('/logout', require('./routes/logout'));
+app.use('/categories', require('./routes/categories'));
+app.use('/transactions', require('./routes/transactions'));
+
+/*
+app.use('/budget', require('./routes/budget'));
+app.use('/alerts', require('./routes/alerts'));*/
 
 
 //404

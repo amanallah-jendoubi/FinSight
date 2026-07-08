@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './Pages/home'
 import Login from './Pages/login'
 import SignUp from './Pages/sign-up'
+import { Link } from "react-router-dom";
 import Layout from './Layout'
 import Transactions from './Pages/transactions'
 import Alerts from './Pages/alerts'

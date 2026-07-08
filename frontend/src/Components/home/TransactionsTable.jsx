@@ -1,4 +1,4 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
 /**
  * TransactionsTable
@@ -8,10 +8,10 @@ import React from "react";
  * - transactions: [{ date, description, category, type, amount, isPositive }]
  * - onViewAll: () => void
  */
-export default function TransactionsTable({ transactions, onViewAll }) {
+export default function TransactionsTable({ transactions }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-      <h3 className="text-sm font-semibold text-gray-800 mb-4">Dernières transactions</h3>
+      <h3 className="text-sm font-semibold text-gray-800 mb-4">Recent Transactions</h3>
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
@@ -19,9 +19,9 @@ export default function TransactionsTable({ transactions, onViewAll }) {
             <tr className="text-left text-gray-400 text-xs uppercase tracking-wide">
               <th className="font-medium pb-2 pr-4">Date</th>
               <th className="font-medium pb-2 pr-4">Description</th>
-              <th className="font-medium pb-2 pr-4">Catégorie</th>
+              <th className="font-medium pb-2 pr-4">Category/Source</th>
               <th className="font-medium pb-2 pr-4">Type</th>
-              <th className="font-medium pb-2 text-right">Montant</th>
+              <th className="font-medium pb-2 text-right">Amount</th>
             </tr>
           </thead>
           <tbody>
@@ -29,7 +29,7 @@ export default function TransactionsTable({ transactions, onViewAll }) {
               <tr key={i} className="border-t border-gray-50">
                 <td className="py-2 pr-4 text-gray-500">{t.date}</td>
                 <td className="py-2 pr-4 text-gray-800">{t.description}</td>
-                <td className="py-2 pr-4 text-gray-500">{t.category}</td>
+                <td className="py-2 pr-4 text-gray-500">{t.categorySource}</td>
                 <td className="py-2 pr-4 text-gray-500">{t.type}</td>
                 <td
                   className={`py-2 text-right font-medium ${
@@ -45,12 +45,12 @@ export default function TransactionsTable({ transactions, onViewAll }) {
         </table>
       </div>
 
-      <button
-        onClick={onViewAll}
-        className="mt-4 text-sm text-blue-500 hover:text-blue-600 font-medium"
+      <Link
+        to="/transactions"
+        className="mt-4 text-sm text-blue-500 hover:text-blue-600 font-medium inline-block"
       >
         Voir toutes les transactions →
-      </button>
+      </Link>
     </div>
   );
 }

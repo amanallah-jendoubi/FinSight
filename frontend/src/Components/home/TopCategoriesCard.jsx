@@ -12,7 +12,7 @@ export default function TopCategoriesCard({ categories }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-gray-800">Top 3 catégories (dépenses)</h3>
+        <h3 className="text-sm font-semibold text-gray-800">Top 3 categories (expenses)</h3>
         <Star className="w-4 h-4 text-blue-400" />
       </div>
 

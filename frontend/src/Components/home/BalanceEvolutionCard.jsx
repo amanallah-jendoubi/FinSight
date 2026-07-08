@@ -11,7 +11,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 export default function BalanceEvolutionCard({ data }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-      <h3 className="text-sm font-semibold text-gray-800 mb-4">Évolution du solde</h3>
+      <h3 className="text-sm font-semibold text-gray-800 mb-4">Balance Evolution</h3>
 
       <div className="h-40">
         <ResponsiveContainer width="100%" height="100%">

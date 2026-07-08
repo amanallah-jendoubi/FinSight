@@ -138,6 +138,30 @@ async function getTopCategories(req, res) {
 
 
 
+async function getMonthExpenseByCategory (req, res) {
+  try {
+    const { accountId } = req.params;
+    const userId = req.userId;
+
+    let accountIds;
+
+    if (accountId) {
+      accountIds = [accountId];
+    } else {
+      accountIds = await getUserAccountIds(userId);
+    }
+
+    if (accountIds.length === 0) {
+      return res.status(200).json({ message : "user has no accounts" });
+    }
+
+    const result = await transactionsService.getMonthExpenseByCategory(accountIds);
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
+
 
 
 
@@ -147,7 +171,8 @@ module.exports = {
   getMonthTransactionsCount,
   getMonthExpense,
   getMonthIncome,
-  getTopCategories
+  getTopCategories,
+  getMonthExpenseByCategory
 };
 
 
