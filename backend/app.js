@@ -24,6 +24,9 @@ app.use(cookieParser());
 app.use('/signup', require('./routes/signup'));
 //login
 app.use('/login', require('./routes/login'));
+//logout
+app.use ('/logout', require('./routes/logout'));
+
 
 //access token verification 
 const verifyJWT = require ('./middleware/verifyJWT');
@@ -37,7 +40,6 @@ app.use(refreshToken);
 //protected routes 
 
 app.use ('/account', require('./routes/account'));
-app.use ('/logout', require('./routes/logout'));
 app.use('/categories', require('./routes/categories'));
 app.use('/transactions', require('./routes/transactions'));
 

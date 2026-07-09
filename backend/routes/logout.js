@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 
 
-router.get('/', (req, res) => {
-  res.json({'message' : 'Bye Bye'})
+router.post('/', (req, res) => {
+  res.clearCookie('jwt');
+  return res.sendStatus(200);
 });
 
 module.exports = router;
