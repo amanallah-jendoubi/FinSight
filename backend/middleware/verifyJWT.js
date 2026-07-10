@@ -13,7 +13,7 @@ const verifyJWT= (req, res, next)=>{
         (err, decodedPayload)=>{
             if (err){
                 if (err.message === 'jwt expired'){ //jwt expiration error sends control to refreshToken middleware 
-                    return next(); 
+                    return next(); //only runs for one api request the one with the mutex lock
                 }
                 return res.status(403).json({'message': err.message});
             }

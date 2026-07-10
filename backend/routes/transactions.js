@@ -9,6 +9,8 @@ router.get('/income{/:accountId}', require('../controllers/transactionsControlle
 router.get('/categories/top', require('../controllers/transactionsController').getTopCategories);
 router.get('/categoriesPercentage', require('../controllers/transactionsController').getMonthExpenseByCategory );
 router.post('/:accountId', require('../controllers/transactionsController').createTransaction);
+router.put('/:transactionId', require('../controllers/transactionsController').updateTransaction);
+router.delete('/:transactionId', require('../controllers/transactionsController').deleteTransaction);
 
 
 

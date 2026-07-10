@@ -34,6 +34,24 @@ async function createTransaction(req, res) {
     return res.status(500).json({message : "Transaction creation failed"});
   }
 }
+async function updateTransaction(req, res) {
+  try {
+    const { transactionId } = req.params;
+    const { accountId, amount, date, description, type, source, categoryName } = req.body;
+    const updatedTransaction = await transactionsService.updateTransaction(transactionId, {
+      accountId,
+      amount,
+      date,
+      description,
+      type,
+      source,
+      categoryName
+    });
+    return res.status(200).json(updatedTransaction);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
 
 
 async function getAllTransactions(req, res) {
@@ -163,6 +181,17 @@ async function getMonthExpenseByCategory (req, res) {
 }
 
 
+async function deleteTransaction (req, res){
+  const {transactionId} = req.params;
+  const {type} = req.query;
+  try{
+    const result = await transactionsService.deleteTransaction({transactionId, type});
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
+
 
 
 module.exports = {
@@ -172,7 +201,9 @@ module.exports = {
   getMonthExpense,
   getMonthIncome,
   getTopCategories,
-  getMonthExpenseByCategory
+  getMonthExpenseByCategory,
+  deleteTransaction,
+  updateTransaction
 };
 
 

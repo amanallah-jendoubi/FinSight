@@ -1,9 +1,9 @@
 const pool = require('../config/db');
 
-async function createAccount(userId, balance, bankName) {
+async function createAccount(userId, balance, bankName, name) {
   const result = await pool.query(
-    'INSERT INTO "Account" (userId, balance, bankName) VALUES ($1, $2, $3) RETURNING *',
-    [userId, balance, bankName]
+    'INSERT INTO "Account" (userId, balance, bankName, name) VALUES ($1, $2, $3, $4) RETURNING *',
+    [userId, balance, bankName, name]
   );
   return result.rows[0];
 }

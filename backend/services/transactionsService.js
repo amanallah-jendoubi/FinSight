@@ -1,6 +1,24 @@
 const pool = require('../config/db');
 
 
+async function resolveCategory(client, categoryName) {
+  const categoryQuery = `SELECT id FROM "Category" WHERE name = $1`;
+  const categoryResult = await client.query(categoryQuery, [categoryName]);
+
+  if (categoryResult.rows.length > 0) {
+    return { categoryId: categoryResult.rows[0].id, categoryOverridden: false };
+  }
+
+  const insertCategoryQuery = `
+    INSERT INTO "Category" (name)
+    VALUES ($1)
+    RETURNING id
+  `;
+  const newCategoryResult = await client.query(insertCategoryQuery, [categoryName]);
+  return { categoryId: newCategoryResult.rows[0].id, categoryOverridden: true };
+}
+
+
 async function createTransaction({ accountId, amount, date, description, type, source, categoryName }) {
   const client = await pool.connect();
   try {
@@ -18,7 +36,7 @@ async function createTransaction({ accountId, amount, date, description, type, s
     const parentQuery = `
     INSERT INTO "Transaction" (${columnNames})
     VALUES (${placeholders})
-    RETURNING id, amount, date, isAnomaly, description, accountId
+    RETURNING id, amount, TO_CHAR(date, 'YYYY-MM-DD') AS date, isAnomaly, description, accountId
     `;
     const parentResult = await client.query(parentQuery, parentValues);
     const transaction = parentResult.rows[0];
@@ -38,24 +56,7 @@ async function createTransaction({ accountId, amount, date, description, type, s
             `;
         await client.query(updateBalanceQuery, [amount, accountId]);
     } else {
-        const categoryQuery = `SELECT id FROM "Category" WHERE name = $1`;
-        const categoryResult = await client.query(categoryQuery, [categoryName]);
-        let categoryId;
-        let categoryOverridden = false;
-
-        if (categoryResult.rows.length > 0) {
-            categoryId = categoryResult.rows[0].id;
-        } else {
-            const insertCategoryQuery = `
-            INSERT INTO "Category" (name)
-            VALUES ($1)
-            RETURNING id
-            `;
-            const newCategoryResult = await client.query(insertCategoryQuery, [categoryName]);
-            categoryId = newCategoryResult.rows[0].id;
-            categoryOverridden = true;
-        }
-
+        const { categoryId, categoryOverridden } = await resolveCategory(client, categoryName);
         const expenseQuery = `
             INSERT INTO "Expense" (categoryOverridden, categoryId, transactionId)
             VALUES ($1, $2, $3)
@@ -71,7 +72,7 @@ async function createTransaction({ accountId, amount, date, description, type, s
         await client.query(updateBalanceQuery, [amount, accountId]);
     }
     await client.query('COMMIT');
-    return { ...transaction, type: type , ...child };
+    return { ...transaction, type: type , ...child, categoryname: categoryName };
   } catch (error) {
     await client.query('ROLLBACK');
     throw error;
@@ -203,6 +204,192 @@ async function getMonthExpenseByCategory(accountIds) {
 }
 
 
+async function deleteTransaction({ transactionId, type }) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const transactionQuery = `
+      SELECT id, amount, accountId
+      FROM "Transaction"
+      WHERE id = $1 
+    `;
+    const transactionResult = await client.query(transactionQuery, [transactionId]);
+
+    if (transactionResult.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return null;
+    }
+
+    const transaction = transactionResult.rows[0];
+
+    if (type === 'expense') {
+      await client.query(`DELETE FROM "Expense" WHERE transactionId = $1`, [transactionId]);
+
+      const updateBalanceQuery = `
+        UPDATE "Account"
+        SET balance = balance + $1
+        WHERE id = $2
+      `;
+      await client.query(updateBalanceQuery, [transaction.amount, transaction.accountid]);
+    } else if (type === 'income') {
+      await client.query(`DELETE FROM "Income" WHERE transactionId = $1`, [transactionId]);
+
+      const updateBalanceQuery = `
+        UPDATE "Account"
+        SET balance = balance - $1
+        WHERE id = $2
+      `;
+      await client.query(updateBalanceQuery, [transaction.amount, transaction.accountid]);
+    } else {
+      await client.query('ROLLBACK');
+      throw new Error(`Invalid transaction type: ${type}`);
+    }
+    await client.query(`DELETE FROM "Transaction" WHERE id = $1`, [transactionId]);
+    await client.query('COMMIT');
+    return transaction;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+
+
+async function updateTransaction(transactionId, { accountId, amount, date, description, type, source, categoryName }) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const transactionQuery = `
+      SELECT
+        t.id, t.amount, t.accountId,
+        c.name AS oldCategoryName,
+        i.source AS oldSource,
+        CASE
+          WHEN e.transactionId IS NOT NULL THEN 'expense'
+          WHEN i.transactionId IS NOT NULL THEN 'income'
+        END AS oldType
+      FROM "Transaction" t
+      LEFT JOIN "Expense" e ON e.transactionId = t.id
+      LEFT JOIN "Category" c ON c.id = e.categoryId
+      LEFT JOIN "Income" i ON i.transactionId = t.id
+      WHERE t.id = $1
+    `;
+    const transactionResult = await client.query(transactionQuery, [transactionId]);
+    if (transactionResult.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return null;
+    }
+
+    const oldTransaction = transactionResult.rows[0];
+    const oldAmount = parseFloat(oldTransaction.amount);
+    const oldType = oldTransaction.oldtype;
+    const oldAccountId = oldTransaction.accountid;
+    const oldCategoryName = oldTransaction.oldcategoryname;
+
+    const newAmount = parseFloat(amount);
+    const newType = type;
+    // reverse the old transaction's effect on the balance, apply the new one
+    const reverseAmount = oldType === 'expense' ? oldAmount : -oldAmount;
+    const applyAmount = newType === 'expense' ? -newAmount : newAmount;
+
+    await client.query(
+      `UPDATE "Account" SET balance = balance + $1 WHERE id = $2`,
+      [reverseAmount, oldAccountId]
+    );
+    await client.query(
+      `UPDATE "Account" SET balance = balance + $1 WHERE id = $2`,
+      [applyAmount, accountId]
+    );
+
+    let child;
+
+    if (newType !== oldType) {
+      // type changed — remove the row from the OLD type's table,
+      // insert it into the NEW type's table
+      if (oldType === 'expense') {
+        await client.query(`DELETE FROM "Expense" WHERE transactionId = $1`, [transactionId]);
+      } else if (oldType === 'income') {
+        await client.query(`DELETE FROM "Income" WHERE transactionId = $1`, [transactionId]);
+      }
+
+      if (newType === 'expense') {
+        const { categoryId, categoryOverridden } = await resolveCategory(client, categoryName);
+        const expenseResult = await client.query(
+          `INSERT INTO "Expense" (categoryOverridden, categoryId, transactionId)
+           VALUES ($1, $2, $3)
+           RETURNING id, categoryOverridden, categoryId, transactionId`,
+          [categoryOverridden, categoryId, transactionId]
+        );
+        child = expenseResult.rows[0];
+      } else {
+        const incomeResult = await client.query(
+          `INSERT INTO "Income" (source, transactionId)
+           VALUES ($1, $2)
+           RETURNING id, source, transactionId`,
+          [source, transactionId]
+        );
+        child = incomeResult.rows[0];
+      }
+    } else {
+      // type unchanged
+      if (newType === 'expense') {
+        if (categoryName !== oldCategoryName) {
+          const { categoryId, categoryOverridden } = await resolveCategory(client, categoryName);
+          const expenseResult = await client.query(
+            `UPDATE "Expense" SET categoryOverridden = $1, categoryId = $2
+             WHERE transactionId = $3
+             RETURNING id, categoryOverridden, categoryId, transactionId`,
+            [categoryOverridden, categoryId, transactionId]
+          );
+          child = expenseResult.rows[0];
+        } else {
+          const expenseResult = await client.query(
+            `SELECT id, categoryOverridden, categoryId, transactionId FROM "Expense" WHERE transactionId = $1`,
+            [transactionId]
+          );
+          child = expenseResult.rows[0];
+        }
+      } else {
+        const incomeResult = await client.query(
+          `UPDATE "Income" SET source = $1
+           WHERE transactionId = $2
+           RETURNING id, source, transactionId`,
+          [source, transactionId]
+        );
+        child = incomeResult.rows[0];
+      }
+    }
+
+    const updateTransactionQuery = `
+      UPDATE "Transaction"
+      SET amount = $1,
+          date = COALESCE($2, date),
+          description = COALESCE($3, description)
+      WHERE id = $4
+      RETURNING id, amount, TO_CHAR(date, 'YYYY-MM-DD') AS date, isAnomaly, description, accountId
+    `;
+    const updatedResult = await client.query(updateTransactionQuery, [
+      newAmount,
+      date,
+      description,
+      transactionId
+    ]);
+    const transaction = updatedResult.rows[0];
+
+    await client.query('COMMIT');
+    return { ...transaction, type: newType, ...child , categoryname: categoryName};
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
 
 
 
@@ -213,7 +400,9 @@ module.exports = {
   getMonthExpense,
   getMonthIncome,
   getTopCategories,
-  getMonthExpenseByCategory
+  getMonthExpenseByCategory,
+  deleteTransaction,
+  updateTransaction
 };
 
 
