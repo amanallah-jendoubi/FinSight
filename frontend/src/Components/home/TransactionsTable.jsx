@@ -25,7 +25,7 @@ export default function TransactionsTable({ transactions }) {
             </tr>
           </thead>
           <tbody>
-            {transactions.map((t, i) => (
+            {transactions.slice(0, 3).map((t, i) => (
               <tr key={i} className="border-t border-gray-50">
                 <td className="py-2 pr-4 text-gray-500">{t.date}</td>
                 <td className="py-2 pr-4 text-gray-800">{t.description}</td>
