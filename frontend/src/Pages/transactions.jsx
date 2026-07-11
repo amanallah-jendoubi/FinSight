@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import dayjs from "dayjs";
+import toast from "react-hot-toast"
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import FilterBar from "../Components/transactions/FilterBar";
@@ -74,8 +75,9 @@ export default function TransactionsDashboard() {
     try {
       const deletedTransaction = await deleteTransaction(id, type);
       setTransactions(prev => prev.filter(transaction => transaction.id !== id));
+      toast.success("Transaction deleted successfully!");
     }catch(err){
-      console.log (err.message);
+      toast.error("Transaction creation failed");
     }
   } 
 
@@ -91,9 +93,9 @@ export default function TransactionsDashboard() {
         amount: Number(response.amount),
       };
     setTransactions ([...transactions, normalized]);
-      //toast.success("Transaction created successfully");
+      toast.success("Transaction created successfully!");
     }catch(err){
-      //toast.error("Transaction creation failed");
+      toast.error("Transaction creation failed");
     }
   }
 
@@ -114,8 +116,9 @@ const handleEdit = async (id, data) => {
     setTransactions((prev) =>
       prev.map((t) => (t.id === id ? normalized : t))
     );
+    toast.success("Transaction updated successfully!");
   } catch (err) {
-    console.log(err.message);
+    toast.error(err.message)
   }
 };
 
