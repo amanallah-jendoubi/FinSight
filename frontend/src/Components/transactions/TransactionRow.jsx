@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function TransactionRow({ transaction, categories, accounts, onEdit, onDelete}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { id, date, description, categorySource, type, amount } = transaction;
+  const { id, date, description, categorySource, type, amount, accountId } = transaction;
   const isPositive = (type  === 'income');
   const formattedMontant = `${isPositive ? "+" : "-"}${amount.toLocaleString("fr-FR", {
     minimumFractionDigits: 2,
@@ -37,6 +37,7 @@ export default function TransactionRow({ transaction, categories, accounts, onEd
           </button>
           {isModalOpen && (
             <Transaction
+              oldFields = {{date, description, categorySource, type, amount, accountId }}
               transactionText = "Update transaction"
               categories={categories}
               accounts = {accounts}

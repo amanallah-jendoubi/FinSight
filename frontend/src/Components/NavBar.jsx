@@ -77,7 +77,7 @@ export default function NavBar() {
   return (
     <>
       {/* Mobile top bar with toggle */}
-      <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
+      <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
         <span className="text-xl font-bold text-gray-900">FinSight</span>
         <button
           onClick={() => setIsOpen(true)}
@@ -96,16 +96,16 @@ export default function NavBar() {
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
         />
       )}
 
       {/* Sidebar */}
       <nav
         className={`
-          fixed md:static top-0 left-0 h-full md:h-screen w-64 bg-white border-r border-gray-100
+          fixed lg:static top-0 left-0 h-full lg:h-screen w-64 bg-white border-r border-gray-100
           flex flex-col px-4 py-6 z-50 transform transition-transform duration-300 ease-in-out
-          ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
+          ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0
         `}
       >
         <div className="flex items-center justify-between mb-8 px-2">
@@ -113,7 +113,7 @@ export default function NavBar() {
           <button
             onClick={() => setIsOpen(false)}
             aria-label="Close navigation menu"
-            className="md:hidden p-1 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+            className="lg:hidden p-1 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-5 h-5">
               <line x1="6" y1="6" x2="18" y2="18" />
@@ -152,7 +152,7 @@ export default function NavBar() {
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors"
           >
             {icons.logout}
-            <span>Déconnexion</span>
+            <span>Logout</span>
           </button>
         </div>
       </nav>

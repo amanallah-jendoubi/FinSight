@@ -48,6 +48,7 @@ export default function TransactionsDashboard() {
           description: item.description,
           categorySource: item.categoryname ?? item.source,
           type: item.type,
+          accountId: item.accountid,
           amount: Number(item.amount),
         }));
         setTransactions(transactionsData);
@@ -91,6 +92,7 @@ export default function TransactionsDashboard() {
         categorySource: response.categoryname ?? response.source,
         type: response.type,
         amount: Number(response.amount),
+        accountId: response.accountid,
       };
     setTransactions ([...transactions, normalized]);
       toast.success("Transaction created successfully!");
@@ -112,6 +114,7 @@ const handleEdit = async (id, data) => {
       categorySource: updated.categoryname ?? updated.source,
       type: updated.type,
       amount: Number(updated.amount),
+      accountId: updated.accountid,
     };
     setTransactions((prev) =>
       prev.map((t) => (t.id === id ? normalized : t))
@@ -172,7 +175,7 @@ const handleEdit = async (id, data) => {
   }
 
   return (
-    <div className="bg-slate-50 p-6">
+    <div className="bg-slate-50 p-6 h-[100vh]">
       <div className="mx-auto max-w-6xl space-y-4">
         <div className="rounded-xl border border-slate-100 bg-white p-5 shadow-sm">
           <FilterBar filters={filters} categories={categories} accounts = {accounts} onChange={handleFilterChange} onFilter={handleApplyFilters} handleSubmit = {handleSubmit} />

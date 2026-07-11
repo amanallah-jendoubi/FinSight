@@ -5,7 +5,7 @@ import { Toaster } from "react-hot-toast";
 
 export default function Layout() {
   return (
-    <div className="md:flex md:h-screen">
+    <div className="lg:flex lg:h-screen">
       <NavBar />
       <main className="flex-1 overflow-y-auto">
         <Outlet />

@@ -1,13 +1,7 @@
 import React from "react";
 import { Star } from "lucide-react";
 
-/**
- * TopCategoriesCard
- * e.g. "Top 3 catégories (dépenses)".
- *
- * Props:
- * - categories: [{ rank: number, name: string, amount: string }]
- */
+
 export default function TopCategoriesCard({ categories }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">

@@ -20,8 +20,8 @@ export default function TransactionsTable({
   onDelete,
 }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-100">
-      <table className="w-full border-collapse">
+    <div className="rounded-xl border border-slate-100">
+      <table className="border-collapse w-full">
         <thead className="bg-slate-50">
           <tr>
             <th scope="col" className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">

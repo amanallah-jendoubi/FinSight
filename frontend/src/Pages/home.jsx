@@ -16,10 +16,15 @@ import {
 } from "../api/endpoints/transactions";
 import { getAllAccountsByUserId } from "../api/endpoints/accounts";
 
-const colors = [
-  "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40",
-  "#FF8A80", "#80DEEA", "#A5D6A7", "#FFD54F", "#CE93D8", "#EF9A9A",
-];
+
+
+//random color generator
+function generateColor(index) {
+  const hue = (index * 137.508) % 360; // golden angle - keeps every color well spaced from its neighbors
+  const saturation = 65 + (index % 3) * 5;  // 65-75%, vibrant but not neon
+  const lightness = 55 + (index % 4) * 4;   // 55-67%, readable on light/dark backgrounds
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+}
 
 // TODO: replace with real balance-history endpoint once available
 const balanceHistory = [
@@ -70,7 +75,7 @@ export default function Home() {
           (catRes.data || []).map((item, i) => ({
             name: item.name,
             value: Number(item.value),
-            color: colors[i % colors.length],
+            color: generateColor(i),
           }))
         );
 
@@ -129,12 +134,12 @@ export default function Home() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <ExpensesByCategoryCard data={categoryData} />
         <BalanceEvolutionCard data={balanceHistory} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <TopCategoriesCard categories={topCategories} />
         <MonthSummaryCard transactionCount={transactionCount} unreadAlerts={0} />
       </div>

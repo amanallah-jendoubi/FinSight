@@ -3,15 +3,15 @@ import { X } from 'lucide-react';
 import dayjs from 'dayjs';
 
 
-export function Transaction({ categories, accounts,  onClose, onSubmit, transactionText }) {
+export function Transaction({ oldFields = null, categories, accounts,  onClose, onSubmit, transactionText }) {
   const [form, setForm] = useState({
-    date: dayjs().format('YYYY-MM-DD'),
-    description: "",
-    amount: "",
-    type: "expense",
-    category: "",
-    source: "",
-    accountId: "",
+    date: oldFields?.date ||dayjs().format('YYYY-MM-DD'),
+    description: oldFields?.description || "",
+    amount: oldFields?.amount || "",
+    type: oldFields?.type || "expense",
+    category: oldFields?.categorySource ||"",
+    source: oldFields?.categorySource || "",
+    accountId: oldFields?.accountId || "",
   });
   const [errors, setErrors] = useState({});
 
