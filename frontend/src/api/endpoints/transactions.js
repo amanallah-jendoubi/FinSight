@@ -5,6 +5,7 @@ export const getMonthIncome = () => api.get('/transactions/income');
 export const getMonthTransactionsCount = () => api.get('/transactions/count');
 export const getAllTransactions = () => api.get('/transactions');
 export const createTransaction = (accountId, transactionData) => api.post(`/transactions/${accountId}`, transactionData);
+export const importTransactions = (accountId, descriptions) => api.post(`/transactions/import/${accountId}`, descriptions);
 export const updateTransaction = (transactionId, transactionData) => api.put(`/transactions/${transactionId}`, transactionData);
 export const deleteTransaction = (transactionId, transactionType) =>
   api.delete(`/transactions/${transactionId}`, {
