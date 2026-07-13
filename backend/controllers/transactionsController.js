@@ -195,22 +195,38 @@ async function deleteTransaction (req, res){
 }
 
 
-
 async function importTransactions(req, res) {
   const { accountId } = req.params;
   const transactions = req.body;
-  try{
-    const filteredTransactions = await transactionsService.filterNewTransactions({accountId, transactions});
-    const descriptions = filteredTransactions.map(t => t.description);
-  
-    //const predictions = await predictCategoriesBatch(descriptions);
-    return res.status(200).json({"detected" : transactions.length, "doublons": transactions.length- filteredTransactions.length });
-  }catch(err){
-    return  { message : err.message }
+
+  try {
+    const filteredTransactions = await transactionsService.filterNewTransactions({ accountId, transactions });
+
+    const transactionsPayload = filteredTransactions.map(t => ({
+      description: t.description,
+      type: t.type 
+    }));
+
+    const data  = await predictCategoriesBatch(transactionsPayload);
+    // data.results: [{ description, type, type_guessed, category, confidence, source }]
+
+    const enrichedTransactions = filteredTransactions.map((t, i) => ({
+      ...t,
+      type: data.results[i].type,
+      category: data.results[i].category,
+      source: data.results[i].source,
+    }));
+
+
+    return res.status(200).json({
+      detected: transactions.length,
+      duplicates : transactions.length - filteredTransactions.length,
+      transactions : enrichedTransactions
+    });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
 }
-
-
 
 
 
