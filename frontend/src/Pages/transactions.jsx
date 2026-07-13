@@ -94,7 +94,7 @@ export default function TransactionsDashboard() {
         amount: Number(response.amount),
         accountId: response.accountid,
       };
-    setTransactions ([...transactions, normalized]);
+    setTransactions (prev => [...prev, normalized]);
       toast.success("Transaction created successfully!");
     }catch(err){
       toast.error("Transaction creation failed");

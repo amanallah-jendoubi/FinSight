@@ -98,6 +98,7 @@ export default function FilterBar({filters, categories, transactions, setTransac
       </button>
       {isModalOpen && (
         <NewTransaction
+        editAccount={true}
         transactionText= "New transaction"
         categories={categories}
         accounts = {accounts}

@@ -417,7 +417,16 @@ async function filterNewTransactions({ accountId, transactions }) {
 }
 
 
-
+async function createTransactions (accountId, transactions){
+  try {
+    for (const t of transactions) {
+      const { amount, date, description, type, source, categoryName} = t;
+      await createTransaction( {accountId ,amount, date, description, type, source, categoryName }); 
+    }
+  } catch (err) {
+    throw err ;
+  } 
+}
 
 
 
@@ -432,7 +441,8 @@ module.exports = {
   getMonthExpenseByCategory,
   deleteTransaction,
   updateTransaction,
-  filterNewTransactions
+  filterNewTransactions,
+  createTransactions
 };
 
 

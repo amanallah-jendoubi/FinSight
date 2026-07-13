@@ -33,7 +33,7 @@ async function createTransaction(req, res) {
 
     return res.status(201).json(newTransaction); 
   } catch (error) {
-    return res.status(500).json({message : "Transaction creation failed"});
+    return res.status(500).json({message : error.message});
   }
 }
 async function updateTransaction(req, res) {
@@ -230,6 +230,20 @@ async function importTransactions(req, res) {
 
 
 
+// backend controller
+async function createTransactions(req, res) {
+  try {
+    const {accountId} = req.params;
+    const  transactions  = req.body;
+    await transactionsService.createTransactions(accountId, transactions);
+    res.status(201).json({ message: 'All transactions saved' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  } 
+}
+
+
+
 module.exports = {
   createTransaction,
   getAllTransactions,
@@ -240,7 +254,8 @@ module.exports = {
   getMonthExpenseByCategory,
   deleteTransaction,
   updateTransaction,
-  importTransactions
+  importTransactions,
+  createTransactions
 };
 
 

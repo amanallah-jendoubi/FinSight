@@ -3,7 +3,7 @@ import {Transaction} from "./Transaction";
 import { useState } from "react";
 
 
-export default function TransactionRow({ transaction, categories, accounts, onEdit, onDelete}) {
+export default function TransactionRow({ transaction, categories, accounts, editAccount, onEdit, onDelete}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { id, date, description, categorySource, type, amount, accountId } = transaction;
   const isPositive = (type  === 'income');
@@ -37,14 +37,15 @@ export default function TransactionRow({ transaction, categories, accounts, onEd
           </button>
           {isModalOpen && (
             <Transaction
+              editAccount = {editAccount}
               oldFields = {{date, description, categorySource, type, amount, accountId }}
               transactionText = "Update transaction"
               categories={categories}
               accounts = {accounts}
                 onClose={() => setIsModalOpen(false)}
-                onSubmit= {(_,data) =>{
+                onSubmit= {(accountId, data) => {
                    onEdit(id, data);
-                   setIsModalOpen(true);
+                   setIsModalOpen(false);
                 }}
             />
           )}

@@ -12,6 +12,7 @@ import TransactionRow from "./TransactionRow";
  * - onDelete: (id) => void
  */
 export default function TransactionsTable({
+  editAccount = true,
   currentPage,
   transactions,
   categories,
@@ -53,7 +54,7 @@ export default function TransactionsTable({
             </tr>
           ) : (
             transactions.slice((currentPage-1)*6,(currentPage-1)*6 + 6).map((t) => ( // limit to 6 transactions per page
-              <TransactionRow key={t.id} transaction={t} categories={categories} accounts={accounts} onEdit={onEdit} onDelete={onDelete} />
+              <TransactionRow key={t.id} editAccount= {editAccount} transaction={t} categories={categories} accounts={accounts} onEdit={onEdit} onDelete={onDelete} />
             ))
           )}
         </tbody>

@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 import dayjs from 'dayjs';
 
 
-export function Transaction({ oldFields = null, categories, accounts,  onClose, onSubmit, transactionText }) {
+export function Transaction({ oldFields = null, editAccount ,categories, accounts,  onClose, onSubmit, transactionText }) {
   const [form, setForm] = useState({
     date: oldFields?.date ||dayjs().format('YYYY-MM-DD'),
     description: oldFields?.description || "",
@@ -37,7 +37,7 @@ export function Transaction({ oldFields = null, categories, accounts,  onClose, 
       errObj.amount = "Enter a valid amount";
     }
 
-    if (!form.accountId) errObj.accountId = "Required field";
+    if (editAccount && !form.accountId) errObj.accountId = "Required field";
 
     setErrors(errObj);
     return Object.keys(errObj).length === 0;
@@ -188,20 +188,22 @@ export function Transaction({ oldFields = null, categories, accounts,  onClose, 
           )}
 
           {/* Account */}
-          <div>
-            <label className={labelClass}>Account</label>
-            <select
-              value={form.accountId}
-              onChange={(e) => update("accountId", e.target.value)}
-              className={inputClass("accountId")}
-            >
-              <option value="">Select an account</option>
-              {accounts.map((a) => (
-                <option key={a.id} value={a.id}>{a.name}</option>
-              ))}
-            </select>
-            <ErrorText field="accountId" />
-          </div>
+          {editAccount &&
+            <div>
+              <label className={labelClass}>Account</label>
+              <select
+                value={form.accountId}
+                onChange={(e) => update("accountId", e.target.value)}
+                className={inputClass("accountId")}
+              >
+                <option value="">Select an account</option>
+                {accounts.map((a) => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </select>
+              <ErrorText field="accountId" />
+            </div>
+          }
         </div>
 
         <div className="mt-6 flex justify-end gap-2">
