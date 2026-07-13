@@ -391,6 +391,35 @@ async function updateTransaction(transactionId, { accountId, amount, date, descr
 }
 
 
+/**
+ * Filters out transactions that already exist in the DB for this account,
+ * based on (date, description, amount) matching.
+ * Returns only the transactions that are new.
+ */
+async function filterNewTransactions({ accountId, transactions }) {
+  if (!transactions || transactions.length === 0) return [];
+
+  const dates = transactions.map(t => t.date);
+  const minDate = dates.reduce((a, b) => (a < b ? a : b));
+  const maxDate = dates.reduce((a, b) => (a > b ? a : b));
+
+  // Narrow the DB scan to the date range of the incoming batch
+  const { rows: existing } = await pool.query(
+    `SELECT TO_CHAR(date, 'YYYY-MM-DD') AS date, description, amount
+     FROM "Transaction"
+     WHERE accountid = $1
+       AND date BETWEEN $2 AND $3`,
+    [accountId, minDate, maxDate]
+  );
+  const makeKey = (t) => `${t.date}|${t.description.trim().toLowerCase()}|${Number(t.amount).toFixed(2)}`;
+  const existingKeys = new Set(existing.map(makeKey));
+    return transactions.filter(t => !existingKeys.has(makeKey(t)));
+}
+
+
+
+
+
 
 
 module.exports = {
@@ -402,7 +431,8 @@ module.exports = {
   getTopCategories,
   getMonthExpenseByCategory,
   deleteTransaction,
-  updateTransaction
+  updateTransaction,
+  filterNewTransactions
 };
 
 

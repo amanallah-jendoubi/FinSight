@@ -12,19 +12,26 @@ export default function ImportCsv() {
   const [fileName, setFileName] = useState (null);
   const [form, setForm] = useState("");
   const [error, setError] = useState("");
-  const handleClick = ()=>{
+  const handleClick = async()=>{
     if (!form) setError("Select an accout first");
     else{
-      const descriptions = transactions.map((t) => t.description);
-      //const aiRes = await importTransactions (form, descriptions) ;  // ai will autocategorize and set source and type (if type === '')
+      try{
+        const aiRes = await importTransactions (form, transactions) ;  // ai will autocategorize and set source and type (if type === '')
+      }catch (err){
+        console.log (err.message);
+      }
     }
   }
 
 
   useEffect(()=>{
     async function loadAccounts () {
-      const accRes = (await getAllAccountsByUserId());
-      setAccounts((accRes.data.accounts || []).map((a) => ({name:a.name,id: a.id})));
+      try{
+        const accRes = (await getAllAccountsByUserId());
+        setAccounts((accRes.data.accounts || []).map((a) => ({name:a.name,id: a.id})));
+      }catch(err){
+        console.log(err.message);
+      }
     }
     loadAccounts();
   }, []);

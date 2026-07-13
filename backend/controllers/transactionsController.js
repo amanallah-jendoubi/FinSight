@@ -198,24 +198,15 @@ async function deleteTransaction (req, res){
 
 async function importTransactions(req, res) {
   const { accountId } = req.params;
-  const descriptions = req.body;
-
-  if (!Array.isArray(descriptions) || descriptions.length === 0) {
-    return res.status(400).json({ error: "descriptions must be a non-empty array" });
-  }
-
-  try {
-    const predictions = await predictCategoriesBatch(descriptions);
-    return res.status(200).json(predictions);
-  } catch (err) {
-    if (err.response) {
-      // FastAPI responded with an error status
-      console.error("ML service error:", err.response.status, err.response.data);
-      return res.status(502).json({ error: "ML service failed to categorize transactions" });
-    }
-    // Network error / ML service unreachable
-    console.error("ML service unreachable:", err.message);
-    return res.status(503).json({ error: "ML service unavailable" });
+  const transactions = req.body;
+  try{
+    const filteredTransactions = await transactionsService.filterNewTransactions({accountId, transactions});
+    const descriptions = filteredTransactions.map(t => t.description);
+  
+    //const predictions = await predictCategoriesBatch(descriptions);
+    return res.status(200).json({"detected" : transactions.length, "doublons": transactions.length- filteredTransactions.length });
+  }catch(err){
+    return  { message : err.message }
   }
 }
 
