@@ -16,7 +16,8 @@ export default function ImportCsv() {
     if (!form) setError("Select an accout first");
     else{
       try{
-        const aiRes = await importTransactions (form, transactions) ;  // ai will autocategorize and set source and type (if type === '')
+        const aiRes = await importTransactions (form, transactions) ;  
+        console.log (aiRes)     
       }catch (err){
         console.log (err.message);
       }
@@ -94,11 +95,11 @@ export default function ImportCsv() {
 
             if (credit !== null){
               amount = credit;
-              type = 'expense'
+              type = 'income'
             } 
             else if (debit !== null){
               amount = debit;
-              type = 'income';
+              type = 'expense';
             }
             else amount = "";
           }
