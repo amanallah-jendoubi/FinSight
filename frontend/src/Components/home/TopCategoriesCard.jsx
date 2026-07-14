@@ -19,7 +19,7 @@ export default function TopCategoriesCard({ categories }) {
               </span>
               <span className="text-sm text-gray-700">{cat.name}</span>
             </div>
-            <span className="text-sm font-medium text-gray-900">{cat.amount}</span>
+            <span className="text-sm font-medium text-gray-900">{(cat.amount).toLocaleString("fr-FR")}</span>
           </li>
         ))}
       </ul>

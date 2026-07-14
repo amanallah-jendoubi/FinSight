@@ -37,7 +37,7 @@ export default function TransactionsTable({ transactions }) {
                   }`}
                 >
                   {t.type === 'income' ? "+" : "-"}
-                  {t.amount} DT
+                  {(t.amount).toLocaleString("fr-FR")} DT
                 </td>
               </tr>
             ))}
