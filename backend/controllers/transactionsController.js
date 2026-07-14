@@ -255,7 +255,8 @@ module.exports = {
   deleteTransaction,
   updateTransaction,
   importTransactions,
-  createTransactions
+  createTransactions,
+  getUserAccountIds
 };
 
 

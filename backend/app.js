@@ -42,10 +42,10 @@ app.use(refreshToken);
 app.use ('/account', require('./routes/account'));
 app.use('/categories', require('./routes/categories'));
 app.use('/transactions', require('./routes/transactions'));
-
-/*
 app.use('/budget', require('./routes/budget'));
-app.use('/alerts', require('./routes/alerts'));*/
+
+
+/*app.use('/alerts', require('./routes/alerts'));*/
 
 
 //404
