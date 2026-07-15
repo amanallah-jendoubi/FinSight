@@ -1,6 +1,6 @@
 import { Plus } from "lucide-react";
 import { useState, useEffect } from "react";
-import { createBudget, getAllBudgets } from '../api/endpoints/budget'
+import { createBudget, getAllBudgets, updateBudget, deleteBudget } from '../api/endpoints/budget'
 import BudgetTableRow from "../Components/budgets/BudgetTableRow";
 import BudgetCard from "../Components/budgets/BudgetCard";
 import NewBudget from "../Components/budgets/NewBudget";
@@ -18,6 +18,7 @@ export default function Budgets() {
           const budget = Number(b.limitamount);
           const spent = Number(b.moneyspent);
           return {
+            id : b.id ,
             category: b.name,
             budget,
             spent,
@@ -36,6 +37,7 @@ export default function Budgets() {
     try {
       const res = (await createBudget(formData)).data;
       const newBudget = {
+        id : res.id,
         category: res.categoryName,
         budget: Number(res.limitamount),
         spent: Number(res.moneyspent),
@@ -52,6 +54,39 @@ export default function Budgets() {
     }
   }
 
+  async function handleEdit (budgetId, updatedAmount){
+    try{
+      const res = (await updateBudget(budgetId, {updatedAmount})).data;
+       const updatedBudget = {
+        id : res.id,
+        category: res.categoryName,
+        budget: Number(res.limitamount),
+        spent: Number(res.moneyspent),
+        percentage:
+          Number(res.limitamount) > 0
+            ? Math.round((Number(res.moneyspent) / Number(res.limitamount)) * 100)
+            : 0,
+      };
+      setBudgets((prev) =>
+        prev.map((b) => (b.id === updatedBudget.id ? updatedBudget : b))
+      );   
+      toast.success("budget updated successfully!")
+    }catch (err){
+      toast.error("Unable to update budget");
+    }
+  }
+
+  async function handleDelete (budgetId){
+    try{
+      (await deleteBudget(budgetId))
+      setBudgets((prev) => prev.filter((b) => b.id !== budgetId));
+      toast.success("budget deleted successfully!")
+    }catch (err){
+      toast.error("Unable to delete budget");
+    }
+  }
+
+
   return (
     <div className="w-[95%] md:w-[80%] mx-auto mt-14 rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm">
       {/* Header */}
@@ -64,7 +99,7 @@ export default function Budgets() {
           <Plus className="h-4 w-4" strokeWidth={2.5} />
           <span>Add a budget</span>
         </button>
-        {showForm && <NewBudget onClose={() => setShowForm(false)} onSubmit={handleSubmit} />}
+        {showForm && <NewBudget onClose={() => setShowForm(false)} onSubmit={handleSubmit} formTitle= "Add budget" />}
       </div>
 
       {budgets.length === 0 ? (
@@ -87,7 +122,7 @@ export default function Budgets() {
               </thead>
               <tbody>
                 {budgets.map((row) => (
-                  <BudgetTableRow key={row.category} {...row} />
+                  <BudgetTableRow key={row.id} {...row}  handleEdit={handleEdit} handleDelete={handleDelete} />
                 ))}
               </tbody>
             </table>
@@ -96,7 +131,7 @@ export default function Budgets() {
           {/* Cards — below sm */}
           <div className="sm:hidden space-y-3">
             {budgets.map((row) => (
-              <BudgetCard key={row.category} {...row} />
+              <BudgetCard key={row.category} {...row}   handleEdit={handleEdit} handleDelete={handleDelete} />
             ))}
           </div>
         </>
