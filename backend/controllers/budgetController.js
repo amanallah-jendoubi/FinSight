@@ -32,9 +32,33 @@ const getAllBudgets = async (req, res) => {
 };
 
 
+const updateBudget = async (req, res) => {
+  try {
+    const { budgetId } = req.params;
+    const {updatedAmount} = req.body; 
+    const result = await bugdgetService.updateBudget( budgetId, updatedAmount );
+    return res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+const deleteBudget = async (req, res) => {
+  try {
+    const { budgetId } = req.params;
+    await bugdgetService.deleteBudget( budgetId);
+    return res.sendStatus(204);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 
 
 module.exports = {
     createBudget, 
-    getAllBudgets
+    getAllBudgets,
+    updateBudget,
+    deleteBudget
 }

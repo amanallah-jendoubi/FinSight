@@ -29,4 +29,27 @@ async function getAllBudgetsByUserId(userId) {
   return result.rows;
 }
 
-module.exports = { createBudget, getAllBudgetsByUserId };
+async function updateBudget(budgetId, updatedAmount) {
+  const result = await pool.query(
+    'UPDATE "Budget" SET limitamount = $1 WHERE id = $2 RETURNING *',
+    [updatedAmount, budgetId]
+  );
+  const categoryName  = (await pool.query(
+    'SELECT name from "Category" where id = $1',
+    [(result.rows[0]).categoryid]
+  )).rows[0].name;
+  return {...result.rows[0], categoryName};
+}
+
+async function deleteBudget(budgetId) {
+  const result = await pool.query(
+    'DELETE FROM "Budget" WHERE id = $1',
+    [budgetId]
+  );
+}
+
+
+
+
+
+module.exports = { createBudget, getAllBudgetsByUserId, updateBudget, deleteBudget };
