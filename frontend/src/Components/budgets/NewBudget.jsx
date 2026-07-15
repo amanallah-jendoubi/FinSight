@@ -2,13 +2,16 @@ import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import dayjs from 'dayjs';
 import { getAllCategories } from "../../api/endpoints/categories";
+import { createPortal } from "react-dom";
 
 
 
-export default function NewBudget({ onClose, onSubmit }) {
+
+export default function NewBudget({ onClose, onSubmit, budgetData = {}, formTitle }) {
   const [form, setForm] = useState({
-    category: "",
-    budget : ""
+    id: budgetData?.id || null,
+    category: budgetData?.category || "",
+    budget :  budgetData?.budget || ""
   });
   const [categories, setCategories] = useState([]);
   const [errors, setErrors] = useState({});
@@ -21,7 +24,9 @@ export default function NewBudget({ onClose, onSubmit }) {
         console.error(err.message);
       }
     }
-    loadCategories();
+    if (!form.category){
+      loadCategories();
+    }
   }, []);
 
   const update = (key, value) => {
@@ -44,6 +49,7 @@ export default function NewBudget({ onClose, onSubmit }) {
   const handleSubmit = async () => {
     if (!validate()) return;
     const payload = {
+      id : form.id,
       categoryName: form.category ,
       amount : form.budget,
     };
@@ -63,14 +69,14 @@ export default function NewBudget({ onClose, onSubmit }) {
       <p className="mt-1 text-xs text-red-500">{errors[field]}</p>
     ) : null;
 
-  return (
+ return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30" onClick={onClose}>
       <div
         className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-medium">Add Budget</h2>
+          <h2 className="text-lg font-medium">{ formTitle }</h2>
           <button onClick={onClose} aria-label="close">
             <X className="h-5 w-5 text-slate-400 hover:text-slate-600" />
           </button>
@@ -97,7 +103,7 @@ export default function NewBudget({ onClose, onSubmit }) {
             </div>
 
           {/* Category*/}
-         
+         {!form.category && 
             <div>
               <label className={labelClass}>Category</label>
               <select
@@ -112,7 +118,9 @@ export default function NewBudget({ onClose, onSubmit }) {
               </select>
               <ErrorText field="category" />
             </div>  
+          }
         </div>
+        
 
         <div className="mt-6 flex justify-end gap-2">
           <button onClick={onClose} className="rounded-lg px-4 py-2 text-sm text-slate-600 hover:bg-slate-50">
@@ -126,6 +134,7 @@ export default function NewBudget({ onClose, onSubmit }) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
