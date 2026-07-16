@@ -1,7 +1,7 @@
 const {resolveCategory} =  require ('./categoriesService');
 const pool = require('../config/db');
 
-async function createTransaction({ accountId, amount, date, description, type, source, categoryName }) {
+async function createTransaction({ userId ,accountId, amount, date, description, type, source, categoryName }) {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -52,6 +52,12 @@ async function createTransaction({ accountId, amount, date, description, type, s
             WHERE id = $2
         `;
         await client.query(updateBalanceQuery, [amount, accountId]);
+        const updateMoneySpentQuery = `
+            UPDATE "Budget"
+            SET moneySpent = moneySpent + $1
+            WHERE userId = $2 and categoryId = $3
+        `;
+        await client.query(updateMoneySpentQuery, [amount, userId, categoryId]);
     }
     await client.query('COMMIT');
     return { ...transaction, type: type , ...child, categoryname: categoryName };
@@ -186,10 +192,16 @@ async function getMonthExpenseByCategory(accountIds) {
 }
 
 
-async function deleteTransaction({ transactionId, type }) {
+async function deleteTransaction({ userId, transactionId, type }) {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
+
+    const updateMoneySpentQuery = `
+      UPDATE "Budget"
+      SET moneySpent = moneySpent + $1
+      WHERE userId = $2 and categoryId = $3
+    `;
 
     const transactionQuery = `
       SELECT id, amount, accountId
@@ -206,7 +218,16 @@ async function deleteTransaction({ transactionId, type }) {
     const transaction = transactionResult.rows[0];
 
     if (type === 'expense') {
+
+      const getExpenseQuery = `
+        SELECT categoryId 
+        FROM "Expense" 
+        WHERE transactionId = $1
+      `;
+      const expenseResult = await client.query(getExpenseQuery, [transactionId]);
+      const categoryId = expenseResult.rows[0].categoryid;
       await client.query(`DELETE FROM "Expense" WHERE transactionId = $1`, [transactionId]);
+      await client.query(updateMoneySpentQuery, [-(transaction.amount), userId, categoryId]);
 
       const updateBalanceQuery = `
         UPDATE "Account"
@@ -240,15 +261,22 @@ async function deleteTransaction({ transactionId, type }) {
 
 
 
-async function updateTransaction(transactionId, { accountId, amount, date, description, type, source, categoryName }) {
+async function updateTransaction(transactionId, { userId ,accountId, amount, date, description, type, source, categoryName }) { 
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
+    const updateMoneySpentQuery = `
+      UPDATE "Budget"
+      SET moneySpent = moneySpent + $1
+      WHERE userId = $2 and categoryId = $3
+    `;
+    
 
     const transactionQuery = `
       SELECT
         t.id, t.amount, t.accountId,
         c.name AS oldCategoryName,
+        c.id AS oldCategoryId, 
         i.source AS oldSource,
         CASE
           WHEN e.transactionId IS NOT NULL THEN 'expense'
@@ -271,6 +299,8 @@ async function updateTransaction(transactionId, { accountId, amount, date, descr
     const oldType = oldTransaction.oldtype;
     const oldAccountId = oldTransaction.accountid;
     const oldCategoryName = oldTransaction.oldcategoryname;
+    const oldCategoryId = oldTransaction.oldcategoryid;
+
 
     const newAmount = parseFloat(amount);
     const newType = type;
@@ -294,6 +324,7 @@ async function updateTransaction(transactionId, { accountId, amount, date, descr
       // insert it into the NEW type's table
       if (oldType === 'expense') {
         await client.query(`DELETE FROM "Expense" WHERE transactionId = $1`, [transactionId]);
+        await client.query(updateMoneySpentQuery, [(-oldAmount), userId, oldCategoryId]);
       } else if (oldType === 'income') {
         await client.query(`DELETE FROM "Income" WHERE transactionId = $1`, [transactionId]);
       }
@@ -306,6 +337,7 @@ async function updateTransaction(transactionId, { accountId, amount, date, descr
            RETURNING id, categoryOverridden, categoryId, transactionId`,
           [categoryOverridden, categoryId, transactionId]
         );
+        await client.query(updateMoneySpentQuery, [newAmount, userId, categoryId]);
         child = expenseResult.rows[0];
       } else {
         const incomeResult = await client.query(
@@ -319,8 +351,10 @@ async function updateTransaction(transactionId, { accountId, amount, date, descr
     } else {
       // type unchanged
       if (newType === 'expense') {
+        const { categoryId, categoryOverridden } = await resolveCategory(client, categoryName);
         if (categoryName !== oldCategoryName) {
-          const { categoryId, categoryOverridden } = await resolveCategory(client, categoryName);
+          await client.query(updateMoneySpentQuery, [(-oldAmount), userId, oldCategoryId]);
+          await client.query(updateMoneySpentQuery, [ newAmount, userId, categoryId]);
           const expenseResult = await client.query(
             `UPDATE "Expense" SET categoryOverridden = $1, categoryId = $2
              WHERE transactionId = $3
@@ -333,6 +367,8 @@ async function updateTransaction(transactionId, { accountId, amount, date, descr
             `SELECT id, categoryOverridden, categoryId, transactionId FROM "Expense" WHERE transactionId = $1`,
             [transactionId]
           );
+          await client.query(updateMoneySpentQuery, [(-oldAmount), userId, categoryId]); 
+          await client.query(updateMoneySpentQuery, [ newAmount, userId, categoryId]);
           child = expenseResult.rows[0];
         }
       } else {

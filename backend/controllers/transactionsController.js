@@ -14,6 +14,7 @@ async function getUserAccountIds(userId) {
 
 async function createTransaction(req, res) {
   try {
+    const userId = req.userId;
     const { accountId } = req.params;
     const { amount, date, description, type, source, categoryName} = req.body;
 
@@ -22,6 +23,7 @@ async function createTransaction(req, res) {
     }
 
     const newTransaction = await transactionsService.createTransaction({
+      userId,
       accountId,
       amount,
       date,
@@ -38,9 +40,11 @@ async function createTransaction(req, res) {
 }
 async function updateTransaction(req, res) {
   try {
+    const userId = req.userId ;
     const { transactionId } = req.params;
     const { accountId, amount, date, description, type, source, categoryName } = req.body;
     const updatedTransaction = await transactionsService.updateTransaction(transactionId, {
+      userId ,
       accountId,
       amount,
       date,
@@ -184,10 +188,11 @@ async function getMonthExpenseByCategory (req, res) {
 
 
 async function deleteTransaction (req, res){
+  const userId = req.userId;
   const {transactionId} = req.params;
   const {type} = req.query;
   try{
-    const result = await transactionsService.deleteTransaction({transactionId, type});
+    const result = await transactionsService.deleteTransaction({ userId, transactionId, type });
     return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({ error: error.message });
