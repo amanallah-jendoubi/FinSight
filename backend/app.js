@@ -1,5 +1,29 @@
 const express = require('express');
-const app = express();
+const { Server } = require('socket.io');
+const http = require('http');
+
+const app = express(); // request listner
+const server = http.createServer(app); // http server
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:5173"]
+  }
+});
+
+//jwt verification on the handshake 
+const verifySocketJWT = require ('./middleware/verifySocketJWT');
+io.use(verifySocketJWT);
+
+io.on('connection', (socket) => {
+  socket.join(`user:${socket.userId}`); //join user specific room
+  console.log(`Rooms for ${socket.id}:`, [...socket.rooms]); // should show socket.id AND user:125
+  socket.on('disconnect', () => {
+    console.log(`User ${socket.userId} disconnected`); 
+  });
+});
+
+
+
 const PORT = process.env.PORT || 3500 ;  
 
 //builtin middleware to handle url encoded data in requests
@@ -54,6 +78,10 @@ app.use((req, res) => {
 });
 
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`🚀 FinSight backend running on port ${PORT}`);
 });
+
+
+
+module.exports = {io};
