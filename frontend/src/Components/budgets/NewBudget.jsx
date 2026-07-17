@@ -39,8 +39,11 @@ export default function NewBudget({ onClose, onSubmit, budgetData = {}, formTitl
 
   const validate = () => {
     const errObj = {};
-
-    if (!form.budget) errObj.budget = "Required field";
+    if (!form.budget) {
+      errObj.budget = "Required field";
+    } else if (Number(form.budget) <= 0) {
+      errObj.budget = "Budget must be strictly positive!";
+    }
     if (!form.category) errObj.category = "Required field";
     setErrors(errObj);
     return Object.keys(errObj).length === 0;
