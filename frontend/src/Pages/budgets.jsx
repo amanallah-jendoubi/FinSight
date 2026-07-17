@@ -22,7 +22,7 @@ export default function Budgets() {
             category: b.name,
             budget,
             spent,
-            percentage: budget > 0 ? Math.round((spent / budget) * 100) : 0,
+            percentage: Math.round((spent / budget) * 100),
           };
         });
         setBudgets(mapped || []);
