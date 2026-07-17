@@ -18,7 +18,6 @@ const refreshToken =  async (req, res, next)=>{
         process.env.REFRESH_TOKEN_SECRET,
         async (err) => {
             if (err) {
-                console.log('dead refresh');
                return res.status(403).json({ error : 'Invalid refresh token' }); // fires when refreshToken has expired => logout
             }
             const { accessToken, refreshToken } = createAccessAndRefreshJwts(user);
