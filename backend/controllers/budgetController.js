@@ -35,8 +35,9 @@ const getAllBudgets = async (req, res) => {
 const updateBudget = async (req, res) => {
   try {
     const { budgetId } = req.params;
+    const userId = req.userId;
     const {updatedAmount} = req.body; 
-    const result = await bugdgetService.updateBudget( budgetId, updatedAmount );
+    const result = await bugdgetService.updateBudget( userId, budgetId, updatedAmount );
     return res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -47,7 +48,7 @@ const updateBudget = async (req, res) => {
 const deleteBudget = async (req, res) => {
   try {
     const { budgetId } = req.params;
-    await bugdgetService.deleteBudget( budgetId);
+    await bugdgetService.deleteBudget(budgetId);
     return res.sendStatus(204);
   } catch (err) {
     res.status(500).json({ message: err.message });

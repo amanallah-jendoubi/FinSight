@@ -4,7 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 
 
 const mutex = new Mutex();
-let accessToken = null;
+export let accessToken = null;
 export const setAxiosAccessToken = (token) => { accessToken = token; };
 
 const api = axios.create({
@@ -18,7 +18,7 @@ const logoutApi = axios.create({
   withCredentials: true,
 });
 
-function isTokenExpired(token) {
+export function isTokenExpired(token) {
   if (!token) return true;
   try {
     const { exp } = jwtDecode(token);
