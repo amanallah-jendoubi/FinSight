@@ -13,23 +13,32 @@ async function updateBudgetSpending(client, userId, categoryId, categoryName, de
 
   const budget = result.rows[0];
   if (!budget) return null; // no matching budget for this category => nothing to check
-
   const percentage = (budget.moneyspent / budget.limitamount) * 100;
   if (percentage <= 80) return null;
-
+  let message;
+  let title;
+  if (percentage>= 100){
+    message = `you have exceeded your ${categoryName} budget by ${budget.moneyspent-budget.limitamount} DT`;
+    title = `Budget exceeded : ${categoryName}`;
+  } 
+  else{
+    message = `you've used ${percentage.toFixed(0)}% of your ${categoryName} budget`
+    title=`High spending in ${categoryName}`
+  } 
   const alertResult = await client.query(
     `INSERT INTO "Alert"
-       (message, isread, createdat, ishandled, type, transactionid, budgetid, userid)
-     VALUES ($1, $2, NOW(), $3, $4, $5, $6, $7)
+       (message, isread, createdat, ishandled, type, transactionid, budgetid, userid, title)
+     VALUES ($1, $2, NOW(), $3, $4, $5, $6, $7, $8)
      RETURNING *`,
     [
-      `Watch out you've used ${percentage.toFixed(0)}% of your ${categoryName} budget!`,
+      message,
       false,
       null,
       'budget',
       null,
       budget.id,
-      userId
+      userId,
+      title,
     ]
   );
 

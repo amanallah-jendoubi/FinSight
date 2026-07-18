@@ -25,7 +25,7 @@ export default function Layout() {
 
         socketRef.current.on('budget/alerts', (data) => {
           setAlerts((prev) => [data, ...prev]); // newest first
-          toast(data.message, { icon: '⚠️' }); // to do (styling)
+          toast(data.title, { icon: '⚠️' }); // to do (styling)
         });
 
         socketRef.current.on('connect_error', (err) => {
