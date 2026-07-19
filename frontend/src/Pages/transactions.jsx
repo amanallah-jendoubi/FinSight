@@ -10,6 +10,8 @@ import Pagination from "../Components/transactions/Pagination";
 import { getAllTransactions, deleteTransaction, updateTransaction, createTransaction } from "../api/endpoints/transactions";
 import { getAllCategories } from "../api/endpoints/categories";
 import {getAllAccountsByUserId} from "../api/endpoints/accounts";
+import Loading from '../Components/Loading';
+
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -165,13 +167,8 @@ const handleEdit = async (id, data) => {
 
   if (loading) {
     return (
-      <div className="flex min-h-[300px] items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-slate-600" />
-          <p className="text-sm text-slate-500">Loading transactions...</p>
-        </div>
-      </div>
-    );
+      <Loading message= 'Loading transactions...'/>
+    )
   }
 
   return (
