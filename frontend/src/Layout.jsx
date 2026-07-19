@@ -5,12 +5,15 @@ import toast from "react-hot-toast";
 import { io } from 'socket.io-client';
 import { useEffect, useRef, useState } from "react";
 import { accessToken, isTokenExpired } from './api/axiosInstance';
+import { getUnreadAlertsCount } from "./api/endpoints/alerts";
+
 
 
 
 export default function Layout() {
-    const [alerts, setAlerts] = useState([]);
     const socketRef = useRef(null);
+    const [unreadAlertsCount, setUnreadAlertsCount] = useState (0);
+
     useEffect(() => {
       let cancelled = false;
       async function waitForFreshToken() {
@@ -24,7 +27,7 @@ export default function Layout() {
         });
 
         socketRef.current.on('budget/alerts', (data) => {
-          setAlerts((prev) => [data, ...prev]); // newest first
+          setUnreadAlertsCount((prev) => prev+1);
           toast(data.title, { icon: '⚠️' }); // to do (styling)
         });
 
@@ -32,17 +35,27 @@ export default function Layout() {
           console.error('Socket connection failed:', err.message);
         });
       }
+      async function fetchUnreadAlertsCount (){
+        try{
+          const countRes = await getUnreadAlertsCount ();
+          setUnreadAlertsCount(countRes.data || 0);
+        }catch(err){
+          console.log (err.message);
+        }
+      }
       waitForFreshToken();
+      fetchUnreadAlertsCount();
       return () => {
         cancelled = true;
         socketRef.current?.disconnect();
       };
     }, []);
+
   return (
     <div className="lg:flex h-screen">
-      <NavBar />
+      <NavBar  unreadAlertsCount={ unreadAlertsCount} />
       <main className="flex-1 overflow-y-auto">
-        <Outlet context={{ alerts }} />
+        <Outlet context={{ setUnreadAlertsCount }} />
       </main>
       <Toaster position="top-center" toastOptions={{ duration: 2000 }} />
     </div>

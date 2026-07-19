@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { NavLink } from "react-router-dom"
 
 // Icon set 
@@ -71,7 +71,7 @@ const navItems = [
   { to: "/settings", label: "Settings", icon: icons.settings },
 ]
 
-export default function NavBar() {
+export default function NavBar({unreadAlertsCount}) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -79,17 +79,27 @@ export default function NavBar() {
       {/* Mobile top bar with toggle */}
       <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
         <span className="text-xl font-bold text-gray-900">FinSight</span>
-        <button
-          onClick={() => setIsOpen(true)}
-          aria-label="Open navigation menu"
-          className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-6 h-6">
-            <line x1="4" y1="7" x2="20" y2="7" />
-            <line x1="4" y1="12" x2="20" y2="12" />
-            <line x1="4" y1="17" x2="20" y2="17" />
-          </svg>
-        </button>
+        <div className="flex">
+          <div className="relative m-auto">
+              {icons.alerts}
+              { (unreadAlertsCount>0) && (
+                <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-[10px] font-semibold text-white bg-red-500 rounded-full">
+                {unreadAlertsCount >= 10 ? "10+" : unreadAlertsCount}
+                </span>) 
+              }
+            </div>
+          <button
+            onClick={() => setIsOpen(true)}
+            aria-label="Open navigation menu"
+            className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-6 h-6">
+              <line x1="4" y1="7" x2="20" y2="7" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="17" x2="20" y2="17" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Overlay for mobile when sidebar is open */}
@@ -137,7 +147,14 @@ export default function NavBar() {
                 }`
               }
             >
-              {icon}
+              <div className="relative">
+                {icon}
+                {(label === "Alerts" && (unreadAlertsCount>0)) && (
+                  <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-[10px] font-semibold text-white bg-red-500 rounded-full">
+                  {unreadAlertsCount >= 10 ? "10+" : unreadAlertsCount}
+                  </span>) 
+                }
+              </div>
               <span>{label}</span>
             </NavLink>
           ))}
