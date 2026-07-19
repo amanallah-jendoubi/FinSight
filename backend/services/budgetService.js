@@ -12,13 +12,16 @@ async function checkBudgetThreshold(client, userId, budget, categoryName) {
   if (percentage <= 80) return;
   let message;
   let title;
+  let type;
    if (percentage>= 100){
     message = `you have exceeded your ${categoryName} budget by ${budget.moneyspent-budget.limitamount} DT`;
     title = `Budget exceeded : ${categoryName}`;
+    type = "budget_exceeded"
   } 
   else{
-    message = `you've used ${percentage.toFixed(0)}% of your ${categoryName} budget`
-    title=`High spending in ${categoryName}`
+    message = `you've used ${percentage.toFixed(0)}% of your ${categoryName} budget`;
+    title=`High spending in ${categoryName}`;
+    type = "budget_warning";
   } 
   const alertResult = await client.query(
     `INSERT INTO "Alert"
@@ -29,7 +32,7 @@ async function checkBudgetThreshold(client, userId, budget, categoryName) {
       message,
       false,
       null,
-      'budget',
+      type,
       null,
       budget.id,
       userId,
