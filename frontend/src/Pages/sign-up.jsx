@@ -115,7 +115,7 @@ export default function SignUp() {
               <p className="text-xs text-slate-400 mt-0.5">Join FinSight and start managing your money smarter.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3" noValidate >
               {/* Name */}
               <InputField
                 label="Name"

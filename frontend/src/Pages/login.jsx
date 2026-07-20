@@ -71,7 +71,7 @@ export default function Login() {
               <p className="text-xs text-slate-400 mt-0.5">Good to have you back. Let's see what's changed.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3 " noValidate >
               {/* Email */}
               <InputField
                 label="Email"
@@ -97,7 +97,7 @@ export default function Login() {
                   placeholder="Enter your password"
                   value={form.password}
                   onChange={set("password")}
-                  error={errors.name}
+                  error={errors.password}
                 />
                 <ForgotPasswordLink />
               </div>
