@@ -7,7 +7,7 @@ export default function TransactionRow({ transaction, categories, accounts, edit
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { id, date, description, categorySource, type, amount, accountId } = transaction;
   const isPositive = (type  === 'income');
-  const formattedMontant = `${isPositive ? "+" : "-"}${amount.toLocaleString("fr-FR", {
+  const formattedMontant = `${isPositive ? "+" : "-"}${amount.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;

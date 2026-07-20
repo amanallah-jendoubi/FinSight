@@ -198,7 +198,7 @@ export function Transaction({ oldFields = null, editAccount ,categories, account
               >
                 <option value="">Select an account</option>
                 {accounts.map((a) => (
-                  <option key={a.id} value={a.id}>{a.name}</option>
+                  <option key={a.id} value={a.id}>{a.type}</option>
                 ))}
               </select>
               <ErrorText field="accountId" />
