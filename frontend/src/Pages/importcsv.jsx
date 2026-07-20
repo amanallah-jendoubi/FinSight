@@ -95,7 +95,7 @@ export default function ImportCsv() {
     async function loadAccounts () {
       try{
         const accRes = (await getAllAccountsByUserId());
-        setAccounts((accRes.data.accounts || []).map((a) => ({name:a.name,id: a.id})));
+        setAccounts((accRes.data.accounts || []).map((a) => ({type:a.type, id: a.id})));
       }catch(err){
         console.log(err.message);
       }
@@ -247,7 +247,7 @@ export default function ImportCsv() {
                 >
                   <option className="w-[60%] mx-auto" value="">Select an account</option>
                   {accounts.map((a) => (
-                    <option key={a.id} value={a.id}>{a.name}</option>
+                    <option key={a.id} value={a.id}>{a.type}</option>
                   ))}
                 </select>
                 {error && (

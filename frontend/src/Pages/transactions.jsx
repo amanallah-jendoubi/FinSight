@@ -54,7 +54,7 @@ export default function TransactionsDashboard() {
           amount: Number(item.amount),
         }));
         setTransactions(transactionsData);
-        setAccounts((accRes.data.accounts || []).map((a) => ({name:a.name,id : a.id})));
+        setAccounts((accRes.data.accounts || []).map((a) => ({type:a.type, id : a.id})));
         setCategories((catRes.data || []).map((c) => c.name));
       } catch (err) {
         console.error("Failed to load dashboard", err);
