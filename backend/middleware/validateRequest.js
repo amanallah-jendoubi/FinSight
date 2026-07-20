@@ -17,7 +17,16 @@ const signupSchema = loginSchema.keys({
   }),
 });
 
-const schemas = { login: loginSchema, signup: signupSchema };
+
+const passwordSchema = Joi.object({
+  newPassword: Joi.string().min(6).required().messages({
+    'string.min': 'Password must be at least 6 characters',
+    'any.required': 'Password is required',
+  }),
+});
+
+
+const schemas = { login: loginSchema, signup: signupSchema , password: passwordSchema};
 
 
 
