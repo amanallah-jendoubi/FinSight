@@ -48,8 +48,6 @@ app.use(cookieParser());
 app.use('/signup', require('./routes/signup'));
 //login
 app.use('/login', require('./routes/login'));
-//logout
-app.use ('/logout', require('./routes/logout'));
 
 
 //access token verification 
@@ -68,6 +66,8 @@ app.use('/categories', require('./routes/categories'));
 app.use('/transactions', require('./routes/transactions'));
 app.use('/budget', require('./routes/budget'));
 app.use('/alerts', require('./routes/alerts'));
+app.use('/user', require('./routes/user'));
+app.use ('/logout', require('./routes/logout'));
 
 
 //404
