@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { NavLink } from "react-router-dom"
+import {logout} from '../api/endpoints/logout'
 
 // Icon set 
 const icons = {
@@ -73,6 +74,16 @@ const navItems = [
 
 export default function NavBar({unreadAlertsCount}) {
   const [isOpen, setIsOpen] = useState(false)
+  const handleLogout = async () => {
+  try {
+    setIsOpen(false)
+    await logout();
+  } catch (err) {
+    console.error("Logout request failed:", err)
+  } finally {
+    window.location.href = "/login"
+  }
+}
 
   return (
     <>
@@ -162,10 +173,7 @@ export default function NavBar({unreadAlertsCount}) {
 
         <div className="mt-auto pt-4 border-t border-gray-100">
           <button
-            onClick={() => {
-              setIsOpen(false)
-              onLogout?.()
-            }}
+            onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors"
           >
             {icons.logout}
