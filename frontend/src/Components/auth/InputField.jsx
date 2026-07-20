@@ -1,4 +1,4 @@
-const InputField = ({ label, id, type = "text", placeholder, icon, rightIcon, hint, error, value, onChange }) => (
+const InputField = ({ label, id, type = "text", placeholder, icon, rightIcon, hint, error, value = "", onChange }) => (
   <div className="flex flex-col gap-1">
     <label htmlFor={id} className="text-xs font-medium text-slate-500 uppercase tracking-widest">
       {label}
