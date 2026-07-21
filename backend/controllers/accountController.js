@@ -31,9 +31,20 @@ const getAllAccounts = async (req, res) => {
   }
 };
 
+const deleteAccount = async (req, res) => {
+  try {
+    const { accountId } = req.params;
+    const account = await accountService.deleteAccount(accountId);
+    res.status(200).json(account);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 
 module.exports = {
     createAccount,
     getAccountInfo,
-    getAllAccounts
+    getAllAccounts,
+    deleteAccount
 }
