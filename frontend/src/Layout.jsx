@@ -30,6 +30,10 @@ export default function Layout() {
           setUnreadAlertsCount((prev) => prev+1);
           toast(data.title, { icon: '⚠️' }); // to do (styling)
         });
+        socketRef.current.on('account/alerts', (data) => {
+          setUnreadAlertsCount((prev) => prev+1);
+          toast(data.title, { icon: '⚠️' }); // to do (styling)
+        });
 
         socketRef.current.on('connect_error', (err) => {
           console.error('Socket connection failed:', err.message);
