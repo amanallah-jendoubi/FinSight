@@ -65,7 +65,7 @@ async function getAllTransactions(req, res) {
     const  userId  = req.userId;
     const accountIds  = await getUserAccountIds(userId);    
     if (accountIds.length === 0) { 
-      return res.status(200).json({message : "user has no accounts"});
+      return res.status(200).json([]);
     }
     
     const transactions = await transactionsService.getAllTransactions(accountIds);
@@ -81,7 +81,7 @@ async function getMonthTransactionsCount(req, res) {
     const accountIds = await getUserAccountIds(userId);
 
     if (accountIds.length === 0) {
-      return res.status(200).json({message : "user has no accounts"});
+      return res.status(200).json({count : 0});
     }
 
     const count = await transactionsService.getMonthTransactionsCount(accountIds);
@@ -107,7 +107,7 @@ async function getMonthExpense(req, res) {
     }
 
     if (accountIds.length === 0) {
-      return res.status(200).json({ message : "user has no accounts" });
+      return res.status(200).json({total : 0});
     }
 
     const total = await transactionsService.getMonthExpense(accountIds);
@@ -132,7 +132,7 @@ async function getMonthIncome(req, res) {
     }
 
     if (accountIds.length === 0) {
-      return res.status(200).json({ message : "user has no accounts" });
+      return res.status(200).json({total : 0});
     }
 
     const total = await transactionsService.getMonthIncome(accountIds);
@@ -150,7 +150,7 @@ async function getTopCategories(req, res) {
     const accountIds = await getUserAccountIds(userId);
 
     if (accountIds.length === 0) {
-      return res.status(200).json({message : "user has no accounts"});
+      return res.status(200).json([]);
     }
 
     const topCategories = await transactionsService.getTopCategories(accountIds);
@@ -176,7 +176,7 @@ async function getMonthExpenseByCategory (req, res) {
     }
 
     if (accountIds.length === 0) {
-      return res.status(200).json({ message : "user has no accounts" });
+      return res.status(200).json([]);
     }
 
     const result = await transactionsService.getMonthExpenseByCategory(accountIds);
@@ -253,7 +253,7 @@ const getTotalBalanceEvolution = async (req, res) => {
    const  userId  = req.userId;
     const accountIds  = await getUserAccountIds(userId);    
     if (accountIds.length === 0) { 
-      return res.status(200).json({message : "user has no accounts"});
+      return res.status(200).json([]);
     }
     const result = await transactionsService.getTotalBalanceEvolution(accountIds);
     return res.status(200).json(result);

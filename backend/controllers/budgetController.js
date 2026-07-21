@@ -6,7 +6,7 @@ const createBudget = async (req, res) => {
     try {
       const accountIds = await getUserAccountIds(req.userId);
       if (accountIds.length === 0) {
-        return res.status(200).json({ message : "user has no accounts" });
+        return res.status(200).json(null);
       }
       const { categoryName, amount } = req.body;
       const expenses = await transactionsService.getMonthExpenseByCategory(accountIds);// [{ name: 'Food', amount: 500, value: 45.45 }, ...]
