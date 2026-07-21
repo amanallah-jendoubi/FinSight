@@ -6,7 +6,7 @@ const warnings = [
   "This action cannot be undone",
 ];
 
-export default function DeleteAccountCard({ onDelete = () => {} }) {
+export default function DeleteAccountCard({ onDelete }) {
   return (
     <div className="flex flex-col justify-between gap-4 rounded-2xl border border-red-100 bg-red-50/40 p-6 sm:flex-row sm:items-center">
       <div className="flex gap-4">

@@ -25,7 +25,14 @@ export default function TransactionsTable({ transactions }) {
             </tr>
           </thead>
           <tbody>
-            {transactions.slice(0, 3).map((t, i) => (
+            {transactions.length === 0 ? (
+            <tr>
+              <td colSpan={6} className="px-6 py-10 text-center text-sm text-slate-400">
+                No transactions made yet
+              </td>
+            </tr>
+          ) : (
+            transactions.slice(0, 3).map((t, i) => (
               <tr key={i} className="border-t border-gray-50">
                 <td className="py-2 pr-4 text-gray-500">{t.date}</td>
                 <td className="py-2 pr-4 text-gray-800">{t.description}</td>
@@ -40,7 +47,8 @@ export default function TransactionsTable({ transactions }) {
                   {(t.amount).toLocaleString("fr-FR")} DT
                 </td>
               </tr>
-            ))}
+            ))
+          )}
           </tbody>
         </table>
       </div>

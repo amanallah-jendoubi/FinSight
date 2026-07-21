@@ -28,11 +28,17 @@ export default function BankAccountsCard({
             <th className="pb-3 font-medium">Bank</th>
             <th className="pb-3 font-medium">Type</th>
             <th className="pb-3 font-medium">Balance</th>
-            <th className="pb-3"></th>
           </tr>
         </thead>
         <tbody>
-          {accounts.map((account) => (
+           {accounts.length === 0 ? (
+            <tr>
+              <td colSpan={3} className="px-4 py-10 text-center text-sm text-slate-400">
+                Create an account to get started
+              </td>
+            </tr>
+          ) : (
+            accounts.map((account) => (
             <tr key={account.id} className="border-t border-gray-50">
               <td className="py-3">
                 <p className="font-medium text-gray-900 px-1">{account.bankname}</p>
@@ -54,7 +60,8 @@ export default function BankAccountsCard({
                 </button>
               </td>
             </tr>
-          ))}
+          ))
+          )}
         </tbody>
       </table>
 
