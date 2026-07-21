@@ -1,4 +1,4 @@
-import { ShieldAlert, Wallet } from "lucide-react";
+import { ShieldAlert, Wallet, Banknote } from "lucide-react";
 import dayjs from "dayjs";
 
 
@@ -23,7 +23,20 @@ const typeConfig = {
     iconBg: "bg-red-50",
     iconClass: "text-red-500",
     icon: Wallet,
+  },balance_low: {
+    label: "Balance low",
+    badgeClass: "bg-orange-50 text-orange-500",
+    iconBg: "bg-orange-50",
+    iconClass: "text-orange-500",
+    icon: Banknote,
   },
+  balance_exceeded: {
+    label: "Balance exceeded",
+    badgeClass: "bg-red-50 text-red-500",
+    iconBg: "bg-red-50",
+    iconClass: "text-red-500",
+    icon: Banknote,
+  }
 };
 const read = {
   badgeClass :"bg-gray-100 text-gray-500" ,
