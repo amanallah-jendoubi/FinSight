@@ -41,8 +41,9 @@ export default function NewBudget({ onClose, onSubmit, budgetData = {}, formTitl
     const errObj = {};
     if (!form.budget) {
       errObj.budget = "Required field";
-    } else if (Number(form.budget) <= 0) {
-      errObj.budget = "Budget must be strictly positive!";
+    }
+    else if (form.budget === "" || Number.isNaN(Number(form.budget)) || Number(form.budget) <= 0) {
+      errObj.budget = "Enter a valid budget";
     }
     if (!form.category) errObj.category = "Required field";
     setErrors(errObj);
@@ -106,7 +107,6 @@ export default function NewBudget({ onClose, onSubmit, budgetData = {}, formTitl
             </div>
 
           {/* Category*/}
-         {!form.category && 
             <div>
               <label className={labelClass}>Category</label>
               <select
@@ -121,7 +121,6 @@ export default function NewBudget({ onClose, onSubmit, budgetData = {}, formTitl
               </select>
               <ErrorText field="category" />
             </div>  
-          }
         </div>
         
 
