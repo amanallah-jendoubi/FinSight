@@ -15,7 +15,7 @@ export default function SecurityCard({
 
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-violet-600">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
             <Lock size={16} />
           </div>
           <div>
@@ -31,7 +31,7 @@ export default function SecurityCard({
           onClick={(payload)=>{
             setIsModalOpen(true);
           }}
-          className="flex items-center gap-1 rounded-lg border border-violet-200 px-4 py-2 text-sm font-medium text-violet-600 hover:bg-violet-50"
+          className="flex items-center gap-1 rounded-lg border border-violet-200 px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-violet-50"
         >
           Change
           <span aria-hidden="true">›</span>

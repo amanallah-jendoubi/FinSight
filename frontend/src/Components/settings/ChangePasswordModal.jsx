@@ -58,7 +58,7 @@ export default function ChangePasswordModal({
       >
         <div className="mb-5 flex items-start justify-between">
           <div className="flex gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-violet-600">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-indigo-700">
               <Lock size={18} />
             </div>
             <div>

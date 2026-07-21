@@ -17,7 +17,7 @@ export default function ProfileCard({
       </h2>
 
       <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-100 text-lg font-semibold text-violet-600">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 text-lg font-semibold text-indigo-600">
             {initials}
           </div>
 
