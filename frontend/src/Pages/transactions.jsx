@@ -110,7 +110,7 @@ const handleEdit = async (id, data) => {
   try {
     const updated = (await updateTransaction(id, data)).data;
     const normalized = {
-      id: updated.id,
+      id: id,
       date: updated.date,
       description: updated.description,
       categorySource: updated.categoryname ?? updated.source,
