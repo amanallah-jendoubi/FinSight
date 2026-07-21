@@ -14,6 +14,7 @@ import {
   getMonthIncome,
   getMonthTransactionsCount,
   getAllTransactions,
+ getTotalBalanceEvolution
 } from "../api/endpoints/transactions";
 import { getAllAccountsByUserId } from "../api/endpoints/accounts";
 
@@ -41,6 +42,7 @@ export default function Home() {
   const [categoryData, setCategoryData] = useState([]);
   const [topCategories, setTopCategories] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [balanceHistory, setBalanceHistory] = useState ([]);
   const [soldeTotal, setSoldeTotal] = useState(0);
   const [totalValue, setTotalValue] = useState(0);
   const [monthlyIncome, setMonthlyIncome] = useState(0);
@@ -50,13 +52,14 @@ export default function Home() {
   useEffect(() => {
     async function loadDashboard() {
       try {
-        const [catRes, topRes, balRes, incomeRes, countRes, txRes] = await Promise.all([
+        const [catRes, topRes, balRes, incomeRes, countRes, txRes, evolRes] = await Promise.all([
           getMonthExpenseByCategory(),
           getTopCategories(),
           getAllAccountsByUserId(),
           getMonthIncome(),
           getMonthTransactionsCount(),
           getAllTransactions(),
+          getTotalBalanceEvolution()
         ]);
 
         const rawTopCategories = topRes.data || [];
@@ -89,6 +92,7 @@ export default function Home() {
             amount: Number(item.amount),
           }))
         );
+        setBalanceHistory (evolRes.data || []);
 
         setMonthlyIncome(incomeRes.data.total);
         setTransactionCount(countRes.data.count);
