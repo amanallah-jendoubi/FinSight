@@ -1,4 +1,5 @@
 const {resolveCategory} =  require ('./categoriesService');
+const {updateAccount} = require ('./accountService');
 const pool = require('../config/db');
 
 
@@ -53,6 +54,7 @@ async function updateBudgetSpending(client, userId, categoryId, categoryName, de
 async function createTransaction({ userId ,accountId, amount, date, description, type, source, categoryName }) {
   const client = await pool.connect();
   let newAlert = null;
+  let accountAlert = null;
   try {
     await client.query('BEGIN');
     const parentColumns = ['amount', 'description', 'accountId'];
@@ -81,12 +83,7 @@ async function createTransaction({ userId ,accountId, amount, date, description,
         `;
         const incomeResult = await client.query(incomeQuery, [source, transaction.id]);
         child = incomeResult.rows[0];
-        const updateBalanceQuery = `
-            UPDATE "Account"
-            SET balance = balance + $1
-            WHERE id = $2
-            `;
-        await client.query(updateBalanceQuery, [amount, accountId]);
+        await updateAccount(client, amount, accountId, userId);
     } else {
         const { categoryId, categoryOverridden } = await resolveCategory(client, categoryName);
         const expenseQuery = `
@@ -101,13 +98,16 @@ async function createTransaction({ userId ,accountId, amount, date, description,
             SET balance = balance - $1
             WHERE id = $2
         `;
-        await client.query(updateBalanceQuery, [amount, accountId]);
+        accountAlert = await updateAccount (client, -amount, accountId, userId)
         newAlert = await updateBudgetSpending(client, userId, categoryId, categoryName, amount);
     }
     await client.query('COMMIT');
+     const { io } = require('../app');
     if (newAlert) {
-      const { io } = require('../app');
       io.to(`user:${userId}`).emit('budget/alerts', newAlert);
+    }
+    if (accountAlert){
+      io.to(`user:${userId}`).emit('account/alerts', accountAlert);
     }
     return { ...transaction, type: type , ...child, categoryname: categoryName };
   } catch (error) {
@@ -243,6 +243,7 @@ async function getMonthExpenseByCategory(accountIds) {
 
 async function deleteTransaction({ userId, transactionId, type }) {
   const client = await pool.connect();
+  let accountAlert = null;
   try {
     await client.query('BEGIN');
     const transactionQuery = `
@@ -273,31 +274,21 @@ async function deleteTransaction({ userId, transactionId, type }) {
         'SELECT name from "Category" where id = $1',
         [categoryId]
       )).rows[0].name;
-      // deleting reduces spending — never crosses the threshold upward, so the
-      // returned alert (always null here) is intentionally discarded
       await updateBudgetSpending(client, userId, categoryId, categoryName, -(transaction.amount));
-
-      const updateBalanceQuery = `
-        UPDATE "Account"
-        SET balance = balance + $1
-        WHERE id = $2
-      `;
-      await client.query(updateBalanceQuery, [transaction.amount, transaction.accountid]);
+      await updateAccount (client, transaction.amount, transaction.accountid, userId )
     } else if (type === 'income') {
       await client.query(`DELETE FROM "Income" WHERE transactionId = $1`, [transactionId]);
-
-      const updateBalanceQuery = `
-        UPDATE "Account"
-        SET balance = balance - $1
-        WHERE id = $2
-      `;
-      await client.query(updateBalanceQuery, [transaction.amount, transaction.accountid]);
+      accountAlert= await updateAccount (client, -transaction.amount, transaction.accountid, userId);
     } else {
       await client.query('ROLLBACK');
       throw new Error(`Invalid transaction type: ${type}`);
     }
     await client.query(`DELETE FROM "Transaction" WHERE id = $1`, [transactionId]);
     await client.query('COMMIT');
+    if(accountAlert){
+      const { io } = require('../app');
+      io.to(`user:${userId}`).emit('account/alerts', accountAlert);
+    }
     return transaction;
   } catch (error) {
     await client.query('ROLLBACK');
@@ -312,6 +303,7 @@ async function deleteTransaction({ userId, transactionId, type }) {
 async function updateTransaction(transactionId, { userId ,accountId, amount, date, description, type, source, categoryName }) { 
   const client = await pool.connect();
   let newAlert = null;
+  let accountAlerts = [];
   try {
     await client.query('BEGIN');
 
@@ -350,15 +342,8 @@ async function updateTransaction(transactionId, { userId ,accountId, amount, dat
     // reverse the old transaction's effect on the balance, apply the new one
     const reverseAmount = oldType === 'expense' ? oldAmount : -oldAmount;
     const applyAmount = newType === 'expense' ? -newAmount : newAmount;
-
-    await client.query(
-      `UPDATE "Account" SET balance = balance + $1 WHERE id = $2`,
-      [reverseAmount, oldAccountId]
-    );
-    await client.query(
-      `UPDATE "Account" SET balance = balance + $1 WHERE id = $2`,
-      [applyAmount, accountId]
-    );
+    accountAlerts.push(await updateAccount (client, reverseAmount, oldAccountId, userId ));
+    accountAlerts.push(await updateAccount (client, applyAmount, accountId, userId));
 
     let child;
 
@@ -443,6 +428,12 @@ async function updateTransaction(transactionId, { userId ,accountId, amount, dat
     if (newAlert) {
       const { io } = require('../app');
       io.to(`user:${userId}`).emit('budget/alerts', newAlert);
+    }
+    for (let i = 0; i < accountAlerts.length; i++) {
+      if (accountAlerts[i]){
+        const { io } = require('../app');
+        io.to(`user:${userId}`).emit('account/alerts', accountAlerts[i]);
+      }
     }
     return { ...transaction, type: newType, ...child , categoryname: categoryName};
   } catch (error) {
