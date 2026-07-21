@@ -2,13 +2,7 @@ import React from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import evolution from "../../assets/evolution.png"
 
-/**
- * BalanceEvolutionCard
- * Line chart, e.g. "Évolution du solde".
- *
- * Props:
- * - data: [{ date: string, value: number }]
- */
+
 export default function BalanceEvolutionCard({ data }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
@@ -47,20 +41,18 @@ export default function BalanceEvolutionCard({ data }) {
         </div>
         ):(
 
-<div className="p-4 flex flex-col items-center gap-6 sm:gap-8">
+<div className="p-4 flex flex-col items-center gap-6 sm:gap-8 h-[90%]">
   <img
     src={evolution}
     alt="description"
     className="w-full max-w-[280px] sm:max-w-[360px] h-auto sm:h-[200px] object-contain"
   />
-  <div className="flex flex-col items-center sm:items-start gap-3 text-center sm:text-left">
-    <div>
+    <div className="text-center">
       <h3 className="text-sm font-semibold text-gray-800">No balance history yet</h3>
       <p className="text-sm text-gray-400 mt-1">
         Add your first income or expense to generate your first chart
       </p>
     </div>
-  </div>
 </div>
         )}
     </div>

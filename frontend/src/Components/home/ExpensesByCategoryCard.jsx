@@ -47,17 +47,15 @@ export default function ExpensesByCategoryCard({ data }) {
         </div>
         )
         :(
-        <div className="p-6 flex flex-col items-center gap-8">
-          <img src={donut} alt="description" className="w-32 h-32" />
-          <div className="flex flex-col items-start gap-3">
-            <div>
+        <div className="p-4 flex flex-col items-center gap-6 sm:gap-8 h-[90%] justify-between">
+          <img src={donut} alt="description" className="w-45 h-45 flex-1 object-cover" />
+            <div className="text-center">
               <h3 className="text-sm font-semibold text-gray-800">No expense data yet</h3>
               <p className="text-sm text-gray-400 mt-1">
                 Start adding expenses to see where your money goes
               </p>
             </div>
           </div>
-        </div>
         )
       }
     </div>
