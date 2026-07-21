@@ -235,7 +235,6 @@ async function importTransactions(req, res) {
 
 
 
-// backend controller
 async function createTransactions(req, res) {
   try {
     const {accountId} = req.params;
@@ -245,6 +244,22 @@ async function createTransactions(req, res) {
   } catch (err) {
     res.status(400).json({ error: err.message });
   } 
+}
+
+
+
+const getTotalBalanceEvolution = async (req, res) => {
+  try{
+   const  userId  = req.userId;
+    const accountIds  = await getUserAccountIds(userId);    
+    if (accountIds.length === 0) { 
+      return res.status(200).json({message : "user has no accounts"});
+    }
+    const result = await transactionsService.getTotalBalanceEvolution(accountIds);
+    return res.status(200).json(result);
+  }catch(err){
+    res.status(500).json({ message: err.message });
+  }
 }
 
 
@@ -261,7 +276,8 @@ module.exports = {
   updateTransaction,
   importTransactions,
   createTransactions,
-  getUserAccountIds
+  getUserAccountIds,
+  getTotalBalanceEvolution
 };
 
 

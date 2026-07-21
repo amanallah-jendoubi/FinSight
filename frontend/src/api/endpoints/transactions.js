@@ -4,6 +4,7 @@ export const getTopCategories = () => api.get('/transactions/categories/top');
 export const getMonthIncome = () => api.get('/transactions/income');
 export const getMonthTransactionsCount = () => api.get('/transactions/count');
 export const getAllTransactions = () => api.get('/transactions');
+export const getTotalBalanceEvolution= () => api.get('/transactions/evolution');
 export const createTransaction = (accountId, transactionData) => api.post(`/transactions/${accountId}`, transactionData);
 export const createTransactions = (accountId, transactionsData) => api.post(`/transactions/batch/${accountId}`, transactionsData);
 export const importTransactions = (accountId, transactionData ) => api.post(`/transactions/import/${accountId}`, transactionData);

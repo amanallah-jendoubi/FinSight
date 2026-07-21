@@ -491,7 +491,40 @@ async function createTransactions (accountId, transactions){
   } 
 }
 
+async function getTotalBalanceEvolution (accountIds) {
+ const query = `
+  SELECT
+    date,
+    SUM(daily_total) OVER (ORDER BY date ASC) AS value
+  FROM (
+    SELECT
+      TO_CHAR(t.date, 'YYYY-MM-DD') AS date,
+      SUM(
+        CASE
+          WHEN e.transactionId IS NOT NULL THEN -t.amount
+          WHEN i.transactionId IS NOT NULL THEN t.amount
+          ELSE 0
+        END
+      ) AS daily_total
+    FROM "Transaction" t
+    LEFT JOIN "Expense" e ON e.transactionId = t.id
+    LEFT JOIN "Income" i ON i.transactionId = t.id
+    WHERE t.accountId = ANY($1)
+      AND t.date >= date_trunc('month', CURRENT_DATE)
+      AND t.date < date_trunc('month', CURRENT_DATE) + interval '1 month'
+    GROUP BY t.date
+  ) daily
+  ORDER BY date ASC;
+  `;
+const { rows } = await pool.query(query, [accountIds]);
 
+const history = rows.map(row => ({
+  date: row.date,
+  value: Number(row.value), 
+}));
+return history;
+
+}
 
 
 module.exports = {
@@ -505,5 +538,6 @@ module.exports = {
   deleteTransaction,
   updateTransaction,
   filterNewTransactions,
-  createTransactions
+  createTransactions,
+  getTotalBalanceEvolution
 };
