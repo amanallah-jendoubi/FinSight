@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MoreHorizontal, Plus, X } from "lucide-react";
+import { Trash2, Plus, X } from "lucide-react";
 import AddAccountModal from './AddAccountModal';
 
 function TypeBadge({ children }) {
@@ -14,6 +14,7 @@ function TypeBadge({ children }) {
 export default function BankAccountsCard({
   accounts,
   handleAddAccount,
+  handleBankAccountDelete
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   return (
@@ -43,7 +44,7 @@ export default function BankAccountsCard({
               <td className="py-3">
                 <p className="font-medium text-gray-900 px-1">{account.bankname}</p>
               </td>
-              <td className="py-3">
+              <td className="py-0.5">
                 <TypeBadge>{account.type}</TypeBadge>
               </td>
               <td className="py-3 font-medium text-gray-900">
@@ -52,11 +53,10 @@ export default function BankAccountsCard({
               <td className="py-3 text-right">
                 <button
                   type="button"
-                  aria-label="Account options"
-                  onClick={() => {}}
-                  className="text-gray-400 hover:text-gray-600"
+                  onClick={ ()=>{ handleBankAccountDelete (account.id) } }
+                  className="text-slate-400 transition-colors hover:text-rose-500"
                 >
-                  <MoreHorizontal size={18} />
+                  <Trash2 className="h-4 w-4" />
                 </button>
               </td>
             </tr>

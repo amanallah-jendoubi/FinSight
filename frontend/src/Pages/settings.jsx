@@ -6,7 +6,7 @@ import DeleteAccountCard from "../Components/settings/DeleteAccountCard";
 import { useState, useEffect } from "react";
 import dayjs from 'dayjs';
 import Loading from '../Components/Loading';
-import { getAllAccountsByUserId, createAccount } from "../api/endpoints/accounts";
+import { getAllAccountsByUserId, createAccount, deleteAccount } from "../api/endpoints/accounts";
 import { getUserInfo, updateUserInfo, deleteUser } from "../api/endpoints/user";
 import {logout} from '../api/endpoints/logout'
 import toast from "react-hot-toast";
@@ -69,6 +69,16 @@ export default function Settings() {
     window.location.href = "/login"
   }
 }
+  async function handleBankAccountDelete (accountId) {
+  try{
+    await deleteAccount(accountId);
+    setAccountsInfo((prev) => prev.filter((account) => account.id !== accountId));
+    toast.success('Bank account deleted successfully!');
+  } catch (err) {
+    console.log(err.message);
+    toast.error ('Bank account deletion failed');
+  }
+}
 
   if (loading) {
     return (
@@ -83,7 +93,7 @@ export default function Settings() {
           <ProfileCard userInfo = {userInfo} />
           <PreferencesCard />
           <SecurityCard lastModified = {dayjs(userInfo.createdat).format("YYYY-MM-DD")} handlePwdChange = {handlePwdChange} />
-          <BankAccountsCard accounts = {accountsInfo} handleAddAccount= {handleAddAccount} />
+          <BankAccountsCard accounts = {accountsInfo} handleAddAccount= {handleAddAccount} handleBankAccountDelete= {handleBankAccountDelete} />
         </div>
         <DeleteAccountCard onDelete={handleDelete} />
       </div>
