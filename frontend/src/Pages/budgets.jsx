@@ -36,6 +36,11 @@ export default function Budgets() {
   async function handleSubmit(formData) {
     try {
       const res = (await createBudget(formData)).data;
+      if (!res){
+        setShowForm(false);
+        toast.error('Create an account to get started!');
+        return;
+      }
       const newBudget = {
         id : res.id,
         category: res.categoryName,
