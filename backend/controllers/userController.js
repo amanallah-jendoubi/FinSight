@@ -26,4 +26,15 @@ const updateUserInfo = async (req, res) => {
 
 
 
-module.exports = { getUserInfo, updateUserInfo }
+const deleteUser = async (req, res) => {
+  try {
+    const userId = req.userId;
+    await userService.deleteUser( userId );
+    return res.status(200).json({message : 'user deleted successfully'});
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+module.exports = { getUserInfo, updateUserInfo, deleteUser }

@@ -3,7 +3,7 @@ const router = express.Router();
 
 
 router.post('/', (req, res) => {
-  res.clearCookie('jwt');
+  res.clearCookie('jwt',{ httpOnly: true});
   return res.sendStatus(200);
 });
 

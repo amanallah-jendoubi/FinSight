@@ -7,7 +7,8 @@ import { useState, useEffect } from "react";
 import dayjs from 'dayjs';
 import Loading from '../Components/Loading';
 import { getAllAccountsByUserId, createAccount } from "../api/endpoints/accounts";
-import { getUserInfo, updateUserInfo } from "../api/endpoints/user";
+import { getUserInfo, updateUserInfo, deleteUser } from "../api/endpoints/user";
+import {logout} from '../api/endpoints/logout'
 import toast from "react-hot-toast";
 
 
@@ -57,6 +58,17 @@ export default function Settings() {
       toast.error ('Account creation failed');
     }
   }
+  async function handleDelete () {
+  try{
+    await deleteUser();
+    await logout();
+  } catch (err) {
+    console.log(err.message);
+    toast.error ('Account deletion failed');
+  }finally {
+    window.location.href = "/login"
+  }
+}
 
   if (loading) {
     return (
@@ -73,8 +85,7 @@ export default function Settings() {
           <SecurityCard lastModified = {dayjs(userInfo.createdat).format("YYYY-MM-DD")} handlePwdChange = {handlePwdChange} />
           <BankAccountsCard accounts = {accountsInfo} handleAddAccount= {handleAddAccount} />
         </div>
-
-        <DeleteAccountCard />
+        <DeleteAccountCard onDelete={handleDelete} />
       </div>
     </div>
   );
