@@ -14,7 +14,7 @@ import {
   getMonthIncome,
   getMonthTransactionsCount,
   getAllTransactions,
- getTotalBalanceEvolution
+  getTotalBalanceEvolution
 } from "../api/endpoints/transactions";
 import { getAllAccountsByUserId } from "../api/endpoints/accounts";
 
@@ -28,15 +28,7 @@ function generateColor(index) {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
 
-// TODO: replace with real balance-history endpoint once available
-const balanceHistory = [
-  { date: "01/05", value: 8000 },
-  { date: "08/05", value: 11000 },
-  { date: "15/05", value: 9500 },
-  { date: "22/05", value: 14000 },
-  { date: "29/05", value: 6500 },
-  { date: "31/05", value: 12500 },
-];
+
 
 export default function Home() {
   const [categoryData, setCategoryData] = useState([]);
@@ -82,7 +74,6 @@ export default function Home() {
             color: generateColor(i),
           }))
         );
-
         setTransactions(
           (txRes.data || []).map((item) => ({
             date: item.date,
@@ -93,7 +84,6 @@ export default function Home() {
           }))
         );
         setBalanceHistory (evolRes.data || []);
-
         setMonthlyIncome(incomeRes.data.total);
         setTransactionCount(countRes.data.count);
       } catch (err) {
