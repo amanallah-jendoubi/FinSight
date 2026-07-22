@@ -10,6 +10,12 @@ const io = new Server(server, {
   }
 });
 
+
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swaggerConfig');
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 //jwt verification on the handshake 
 const verifySocketJWT = require ('./middleware/verifySocketJWT');
 io.use(verifySocketJWT);

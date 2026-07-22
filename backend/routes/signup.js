@@ -5,5 +5,11 @@ const validateRequest = require('../middleware/validateRequest');
 
 
 
+/**
+ * @swagger
+ * /signup:
+ *   post:
+ *     summary: Register a user
+ */
 router.post('/', validateRequest('signup'), register);
 module.exports = router ;

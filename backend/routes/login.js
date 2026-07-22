@@ -5,5 +5,11 @@ const validateRequest = require('../middleware/validateRequest');
 
 
 
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Log in a user
+ */
 router.post('/', validateRequest('login'), login);
 module.exports = router ;
