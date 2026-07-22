@@ -26,9 +26,9 @@ async function updateAlert (alertId) {
       [true, alertId]
     );
     return result.rows[0];;
-  } catch (err) {
-    throw err;
-  } 
+  } finally {
+    client.release();
+  }
 }
 
 
