@@ -445,11 +445,7 @@ async function updateTransaction(transactionId, { userId ,accountId, amount, dat
 }
 
 
-/**
- * Filters out transactions that already exist in the DB for this account,
- * based on (date, description, amount) matching.
- * Returns only the transactions that are new.
- */
+
 async function filterNewTransactions({ accountId, transactions }) {
   if (!transactions || transactions.length === 0) return [];
 
