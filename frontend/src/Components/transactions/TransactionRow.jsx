@@ -7,10 +7,7 @@ export default function TransactionRow({ transaction, categories, accounts, edit
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { id, date, description, categorySource, type, amount, accountId } = transaction;
   const isPositive = (type  === 'income');
-  const formattedMontant = `${isPositive ? "+" : "-"}${amount.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
+  const formattedMontant = `${isPositive ? "+" : "-"}${amount.toLocaleString("en-US")}`;
 
   return (
     <tr className="border-t border-slate-100 hover:bg-slate-50/60">
@@ -23,7 +20,7 @@ export default function TransactionRow({ transaction, categories, accounts, edit
           isPositive ? "text-emerald-500" : "text-gray-900"
         }`}
       >
-        {formattedMontant}
+        {formattedMontant} DT
       </td>
       <td className="px-6 py-4">
         <div className="flex items-center justify-center gap-3">

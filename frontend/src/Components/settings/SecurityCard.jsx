@@ -20,8 +20,8 @@ export default function SecurityCard({
           </div>
           <div>
             <p className="text-sm font-medium text-gray-900">Password</p>
-            <p className="text-sm text-gray-500">
-              Last modified : {lastModified}
+            <p className="text-sm text-gray-500 ">
+              Last modified :<p className="min-[430px]:inline "> {lastModified}</p>
             </p>
           </div>
         </div>

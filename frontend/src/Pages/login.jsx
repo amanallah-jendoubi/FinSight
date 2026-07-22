@@ -3,8 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Logo from "../Components/auth/Logo";
 import InputField from "../Components/auth/InputField";
 import PasswordField from "../Components/auth/PasswordField";
-import GoogleButton from "../Components/auth/GoogleButton";
-import Divider from "../Components/auth/Divider";
 import ForgotPasswordLink from "../Components/auth/ForgotPasswordLink";
 import WelcomeBack from "../Components/auth/WelcomeBack";
 import {login} from "../api/endpoints/login";
@@ -119,10 +117,6 @@ export default function Login() {
                   <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
                 </svg>
               </button>
-
-              <Divider />
-
-              <GoogleButton onClick={() => console.log("Google sign in")} />
             </form>
 
             {/* Sign up link */}

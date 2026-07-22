@@ -6,6 +6,7 @@ import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import FilterBar from "../Components/transactions/FilterBar";
 import SearchBar from "../Components/transactions/SearchBar";
 import TransactionsTable from "../Components/transactions/TransactionsTable";
+import TransactionCards from "../Components/transactions/TransactionCards";
 import Pagination from "../Components/transactions/Pagination";
 import { getAllTransactions, deleteTransaction, updateTransaction, createTransaction } from "../api/endpoints/transactions";
 import { getAllCategories } from "../api/endpoints/categories";
@@ -182,7 +183,7 @@ const handleEdit = async (id, data) => {
           <SearchBar value={search} onChange={setSearch} onReset={handleReset} />
         </div>
 
-        <div className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+        <div className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm min-[800px]:block hidden">
           <TransactionsTable
             currentPage = {currentPage}
             transactions={visibleTransactions}
@@ -190,6 +191,16 @@ const handleEdit = async (id, data) => {
             accounts = {accounts}
             onEdit={ handleEdit }
             onDelete={ handleDelete }
+          />
+        </div>
+        <div className="min-[800px]:hidden block">
+          <TransactionCards
+            currentPage={currentPage}
+            transactions={visibleTransactions}
+            categories={categories}
+            accounts={accounts}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
           />
         </div>
         { (Math.ceil(visibleTransactions.length / 6) > 1) && 

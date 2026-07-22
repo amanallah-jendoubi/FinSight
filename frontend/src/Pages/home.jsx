@@ -63,7 +63,7 @@ export default function Home() {
         for (let i = 0; i < rawTopCategories.length; i++) {
           sumTotal += Number(rawTopCategories[i].amount);
         }
-        setTotalValue(sumTotal);
+        setTotalValue(sumTotal.toFixed(2));
 
         setSoldeTotal(balRes.data.totalBalance);
 

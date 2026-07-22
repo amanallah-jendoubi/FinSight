@@ -4,7 +4,7 @@ import AddAccountModal from './AddAccountModal';
 
 function TypeBadge({ children }) {
   return (
-    <span className="rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-600">
+    <span className="rounded-md sm:bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-600">
       {children}
     </span>
   );

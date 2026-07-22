@@ -11,7 +11,7 @@ export default function ExpensesByCategoryCard({ data }) {
         Expense distribution by category
       </h3>
       {data.length > 0 ? (
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-0.5 sm:gap-6 ">
           <div className="w-32 h-32 shrink-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -39,7 +39,7 @@ export default function ExpensesByCategoryCard({ data }) {
                   className="w-2.5 h-2.5 rounded-full"
                   style={{ backgroundColor: entry.color }}
                 />
-                <span className="w-20">{entry.name}</span>
+                <span className="w-15 sm:w-20">{entry.name}</span>
                 <span className="text-gray-400">{entry.value}%</span>
               </li>
             ))}

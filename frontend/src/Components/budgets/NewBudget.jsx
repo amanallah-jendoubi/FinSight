@@ -7,7 +7,7 @@ import { createPortal } from "react-dom";
 
 
 
-export default function NewBudget({ onClose, onSubmit, budgetData = {}, formTitle }) {
+export default function NewBudget({ onClose, onSubmit, budgetData = null, formTitle }) {
   const [form, setForm] = useState({
     id: budgetData?.id || null,
     category: budgetData?.category || "",
@@ -76,7 +76,7 @@ export default function NewBudget({ onClose, onSubmit, budgetData = {}, formTitl
  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30" onClick={onClose}>
       <div
-        className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg"
+        className="sm:w-full w-[90%] max-w-md rounded-xl bg-white p-6 shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -106,7 +106,7 @@ export default function NewBudget({ onClose, onSubmit, budgetData = {}, formTitl
               <ErrorText field="budget" />
             </div>
 
-          {/* Category*/}
+          {!budgetData &&
             <div>
               <label className={labelClass}>Category</label>
               <select
@@ -121,6 +121,7 @@ export default function NewBudget({ onClose, onSubmit, budgetData = {}, formTitl
               </select>
               <ErrorText field="category" />
             </div>  
+          }
         </div>
         
 

@@ -1,16 +1,5 @@
 import TransactionRow from "./TransactionRow";
 
-/**
- * TransactionsTable
- * Displays the list of transactions with sortable column headers.
- *
- * Props:
- * - transactions: Array<{ id, date, description, category, type, montant }>
- * - activeSort: { key: string, direction: 'asc' | 'desc' } | null
- * - onSort: (key) => void
- * - onEdit: (id) => void
- * - onDelete: (id) => void
- */
 export default function TransactionsTable({
   editAccount = true,
   currentPage,

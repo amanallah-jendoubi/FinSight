@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { NavLink } from "react-router-dom"
+import { NavLink, Link } from "react-router-dom"
 import {logout} from '../api/endpoints/logout'
 
 // Icon set 
@@ -90,15 +90,15 @@ export default function NavBar({unreadAlertsCount}) {
       {/* Mobile top bar with toggle */}
       <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
         <span className="text-xl font-bold text-gray-900">FinSight</span>
-        <div className="flex">
-          <div className="relative m-auto">
+        <div className="flex gap-1.5">
+          <Link to="/alerts" className="relative m-auto block">
               {icons.alerts}
               { (unreadAlertsCount>0) && (
                 <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-[10px] font-semibold text-white bg-red-500 rounded-full">
                 {unreadAlertsCount >= 10 ? "10+" : unreadAlertsCount}
                 </span>) 
               }
-            </div>
+          </Link>
           <button
             onClick={() => setIsOpen(true)}
             aria-label="Open navigation menu"

@@ -66,7 +66,7 @@ export default function Settings() {
     console.log(err.message);
     toast.error ('Account deletion failed');
   }finally {
-    window.location.href = "/login"
+    window.location.href = "/signup"
   }
 }
   async function handleBankAccountDelete (accountId) {

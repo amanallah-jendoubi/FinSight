@@ -27,7 +27,17 @@ export default function BudgetTableRow({ id, category, budget, spent, percentage
           </button>
         </div>
       </td>
-      {show && <NewBudget onClose={() => setShow(false)} onSubmit={(updatedData)=>{handleEdit(updatedData.id, updatedData.amount); setShow(false)} }  budgetData = {{id, category, budget}}  formTitle = "Update budget" />}
+      {show &&
+       <NewBudget 
+        onClose={() => setShow(false)} 
+        onSubmit={
+          (updatedData)=>{
+            handleEdit(updatedData.id, updatedData.amount);
+            setShow(false);
+          } 
+        }  
+        budgetData = {{id, category, budget}}  formTitle = "Update budget" />
+       }
     </tr>
   );
 }
