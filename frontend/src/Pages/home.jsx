@@ -65,7 +65,7 @@ export default function Home() {
         }
         setTotalValue(sumTotal.toFixed(2));
 
-        setSoldeTotal(balRes.data.totalBalance);
+        setSoldeTotal((balRes.data.totalBalance).toFixed(2));
 
         setCategoryData(
           (catRes.data || []).map((item, i) => ({
