@@ -12,7 +12,7 @@ const refreshToken =  async (req, res, next)=>{
     const oldRefreshToken = req.cookies.jwt;
     if (!oldRefreshToken) return res.sendStatus(401);
     const user = await findUserByRefreshToken(oldRefreshToken);
-    if (!user) return res.status(403).json({ error : 'Invalid refresh token1' });//wrong refresh token => logout
+    if (!user) return res.status(403).json({ error : 'Invalid refresh token' });//wrong refresh token => logout (delete refreshToken from Db)
     jwt.verify(
         oldRefreshToken,
         process.env.REFRESH_TOKEN_SECRET,
