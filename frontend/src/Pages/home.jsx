@@ -84,7 +84,7 @@ export default function Home() {
           }))
         );
         setBalanceHistory (evolRes.data || []);
-        setMonthlyIncome(incomeRes.data.total);
+        setMonthlyIncome((incomeRes.data.total).toFixed(2));
         setTransactionCount(countRes.data.count);
       } catch (err) {
         console.error("Failed to load dashboard", err);
