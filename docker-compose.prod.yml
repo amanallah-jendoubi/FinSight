@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:15.1-alpine
+    env_file:
+      - backend/.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  express-app:
+    container_name: express-app-container
+    build:
+      context: backend/.
+      target: production
+    env_file:
+      - backend/.env
+    depends_on:
+      - db
+      
+
+volumes:
+  pgdata:
