@@ -1,0 +1,33 @@
+# Version control
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Virtual envs
+venv/
+.venv/
+env/
+
+# Env / secrets
+.env
+.env.*
+
+# Docs 
+README.md
+
+# Editor/OS cruft
+.vscode/
+.idea/
+.DS_Store
+
+# Local dev artifacts
+*.log
