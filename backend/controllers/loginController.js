@@ -14,7 +14,7 @@ const login = async (req, res)=>{
             res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: ms('7d') });
             return res.json({ accessToken }); // to store in memory 
         }
-        return res.status(401).json({ 'message': 'please verify your credentials' });
+        return res.status(403).json({ 'message': 'please verify your credentials' });
     } catch (err) {
         res.status(500).json({ 'message': err.message });
     }
