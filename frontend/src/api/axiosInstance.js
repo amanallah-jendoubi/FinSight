@@ -8,13 +8,13 @@ export let accessToken = null;
 export const setAxiosAccessToken = (token) => { accessToken = token; };
 
 const api = axios.create({
-  baseURL: 'http://localhost:3500',
+  baseURL: import.meta.env.VITE_API_URL  || '/api',
   withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
 });
 
 const logoutApi = axios.create({
-  baseURL: 'http://localhost:3500',
+  baseURL:  import.meta.env.VITE_API_URL  || '/api',
   withCredentials: true,
 });
 
@@ -64,9 +64,9 @@ api.interceptors.response.use(
   },
   async (error) => {
     if (error.config?._release) error.config._release(); 
-    if (error.response?.status === 403) {
+    if (error.response?.status === 401) { //unauthorized
       try { await logoutApi.post('/logout'); } catch {}
-      window.location.href = '/login';
+      window.location.href = '/signup';
     }
     return Promise.reject(error);
   }

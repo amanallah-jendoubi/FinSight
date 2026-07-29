@@ -15,7 +15,23 @@ services:
       - backend/.env
     depends_on:
       - db
-      
+
+  ml-service:
+    container_name: ml-service-container
+    build:
+      context: ml-service/.
+    depends_on:
+      - express-app
+  
+  frontend:
+    container_name: frontend-app-container
+    build:
+      context: frontend/.
+      target: production
+    ports:
+      - "80:80"
+    depends_on:
+      - express-app
 
 volumes:
   pgdata:

@@ -342,9 +342,11 @@ async function updateTransaction(transactionId, { userId ,accountId, amount, dat
     // reverse the old transaction's effect on the balance, apply the new one
     const reverseAmount = oldType === 'expense' ? oldAmount : -oldAmount;
     const applyAmount = newType === 'expense' ? -newAmount : newAmount;
-    accountAlerts.push(await updateAccount (client, reverseAmount, oldAccountId, userId ));
+    const oldAccountAlert = await updateAccount (client, reverseAmount, oldAccountId, userId, accountId);
+    if (oldAccountId  != accountId){
+      accountAlerts.push(oldAccountAlert);
+    }
     accountAlerts.push(await updateAccount (client, applyAmount, accountId, userId));
-
     let child;
 
     if (newType !== oldType) {
@@ -413,14 +415,16 @@ async function updateTransaction(transactionId, { userId ,accountId, amount, dat
       UPDATE "Transaction"
       SET amount = $1,
           date = COALESCE($2, date),
-          description = COALESCE($3, description)
-      WHERE id = $4
+          description = COALESCE($3, description),
+          accountid  = COALESCE($4, accountid)
+      WHERE id = $5
       RETURNING id, amount, TO_CHAR(date, 'YYYY-MM-DD') AS date, isAnomaly, description, accountId
     `;
     const updatedResult = await client.query(updateTransactionQuery, [
       newAmount,
       date,
       description,
+      accountId,
       transactionId
     ]);
     const transaction = updatedResult.rows[0];

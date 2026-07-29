@@ -30,7 +30,7 @@ async function getAllAccountsByUserId(userId) {
 }
 
 
-async function updateAccount(client, amount, accountId, userId) {
+async function updateAccount(client, amount, accountId, userId, oldAccountId = -1) {
   const updateBalanceQuery = `
     UPDATE "Account"
     SET balance = balance + $1
@@ -55,23 +55,26 @@ async function updateAccount(client, amount, accountId, userId) {
       title = `Low Balance Warning`;
       alertType = "balance_low";
     }
-    const alertResult = await client.query(
-      `INSERT INTO "Alert"
-        (message, isread, createdat, ishandled, type, transactionid, budgetid, userid, title)
-      VALUES ($1, $2, NOW(), $3, $4, $5, $6, $7, $8)
-      RETURNING *`,
-      [
-        message,
-        false,
-        null,
-        alertType,
-        null,
-        null,
-        userId,
-        title,
-      ]
-    );
-    return alertResult.rows[0];//emit after commit
+    let alertResult;
+    if (oldAccountId!= accountId){
+      alertResult = await client.query(
+        `INSERT INTO "Alert"
+          (message, isread, createdat, ishandled, type, transactionid, budgetid, userid, title)
+        VALUES ($1, $2, NOW(), $3, $4, $5, $6, $7, $8)
+        RETURNING *`,
+        [
+          message,
+          false,
+          null,
+          alertType,
+          null,
+          null,
+          userId,
+          title,
+        ]
+      );
+    }
+    return alertResult?.rows[0];//emit after commit
   }
   return null;
 }

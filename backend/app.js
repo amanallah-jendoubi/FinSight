@@ -51,9 +51,9 @@ app.use(cookieParser());
 
 
 //sign-up
-app.use('/signup', require('./routes/signup'));
+app.use('/api/signup', require('./routes/signup'));
 //login
-app.use('/login', require('./routes/login'));
+app.use('/api/login', require('./routes/login'));
 
 
 //access token verification 
@@ -67,13 +67,13 @@ app.use(refreshToken);
 
 //protected routes 
 
-app.use ('/account', require('./routes/account'));
-app.use('/categories', require('./routes/categories'));
-app.use('/transactions', require('./routes/transactions'));
-app.use('/budget', require('./routes/budget'));
-app.use('/alerts', require('./routes/alerts'));
-app.use('/user', require('./routes/user'));
-app.use ('/logout', require('./routes/logout'));
+app.use ('/api/account', require('./routes/account'));
+app.use('/api/categories', require('./routes/categories'));
+app.use('/api/transactions', require('./routes/transactions'));
+app.use('/api/budget', require('./routes/budget'));
+app.use('/api/alerts', require('./routes/alerts'));
+app.use('/api/user', require('./routes/user'));
+app.use ('/api/logout', require('./routes/logout'));
 
 
 //404

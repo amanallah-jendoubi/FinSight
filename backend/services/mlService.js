@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const ML_SERVICE_URL = process.env.ML_SERVICE_URL || "http://localhost:8001";
+const ML_SERVICE_URL = process.env.ML_SERVICE_URL;
 const ML_TIMEOUT_MS = 10000;
 
 async function predictCategoriesBatch(transactions) {

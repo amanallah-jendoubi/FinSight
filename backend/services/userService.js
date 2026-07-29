@@ -27,7 +27,16 @@ async function deleteUser (userId) {
 }
 
 
+async function deleteUserRefreshToken (userId) {
+  const result = await pool.query(
+     'UPDATE "User" SET refreshtoken = NULL WHERE id = $1',
+    [userId]
+  );
+}
 
 
-module.exports = {getUserInfo, updateUserInfo, deleteUser };
+
+
+
+module.exports = {getUserInfo, updateUserInfo, deleteUser, deleteUserRefreshToken };
 

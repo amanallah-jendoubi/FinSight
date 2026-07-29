@@ -22,7 +22,7 @@ export default function Layout() {
         }
         if (cancelled) return; // Layout unmounted while waiting => no socket creation
 
-        socketRef.current = io("http://localhost:3500", {
+        socketRef.current = io(import.meta.env.VITE_SOCKET_URL || undefined, {
           auth: { token: accessToken }
         });
 
