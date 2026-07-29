@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6C63FF"></stop>
+      <stop offset="100%" stop-color="#4F46E5"></stop>
+    </linearGradient>
+  </defs>
+
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#bg)"></rect>
+
+  <!-- Bars -->
+  <rect x="16" y="36" width="6" height="14" rx="2" fill="white"></rect>
+  <rect x="29" y="29" width="6" height="21" rx="2" fill="white"></rect>
+  <rect x="42" y="21" width="6" height="29" rx="2" fill="white"></rect>
+
+  <!-- Trend line -->
+  <path d="M19 38 L32 31 L45 23" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+
+  <!-- Data points -->
+  <circle cx="19" cy="38" r="2.2" fill="white"></circle>
+  <circle cx="32" cy="31" r="2.2" fill="white"></circle>
+  <circle cx="45" cy="23" r="2.2" fill="white"></circle>
+</svg>
