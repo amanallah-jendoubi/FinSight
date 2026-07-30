@@ -15,7 +15,7 @@ const login = async (req, res)=>{
                 httpOnly: true,
                 maxAge: ms('7d'),
                 secure: true, // true only over HTTPS
-                sameSite: 'none' ;
+                sameSite: 'none' 
             });
             return res.json({ accessToken }); // to store in memory 
         }
