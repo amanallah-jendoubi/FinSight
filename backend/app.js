@@ -42,8 +42,6 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   credentials: true
 }));
-console.log(process.env.FRONTEND_URL);
- console.log('ghg');
 
 //built-in middleware for json requests
 app.use(express.json());
