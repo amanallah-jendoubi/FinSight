@@ -75,7 +75,7 @@ export default function SignUp() {
                     <path d="M2 12l10 5 10-5"/>
                   </svg>
                 ), 
-                text: "AI-powered budget forecasting" 
+                text: "Automatic AI categorization" 
               },
               { 
                 icon: (
