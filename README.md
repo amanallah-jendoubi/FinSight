@@ -98,7 +98,7 @@ VITE_SOCKET_URL=http://localhost:3500
 
 1. Clone the repository
    ```sh
-   git clone https://github.com/<your-username>/finsight.git
+   git clone https://github.com/amanallah-jendoubi/FinSight.git
    cd finsight
    ```
 2. Create `backend/.env` and `frontend/.env.development` as described above.
