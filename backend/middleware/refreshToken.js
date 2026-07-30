@@ -23,7 +23,12 @@ const refreshToken =  async (req, res, next)=>{
             const { accessToken, refreshToken } = createAccessAndRefreshJwts(user);
             try {
                 await saveRefreshToken(user, refreshToken);
-                res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: ms('7d') });
+                res.cookie('jwt', refreshToken, { 
+                    httpOnly: true,
+                    maxAge: ms('7d') ,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+                });
                 return res.json({ 
                         accessToken,
                         message: 'Token refreshed successfully'

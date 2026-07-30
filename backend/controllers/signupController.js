@@ -17,8 +17,8 @@ const register = async (req, res) => {
         res.cookie('jwt', refreshToken, {
             httpOnly: true,
             maxAge: ms('7d') ,
-            secure: true, // true only over HTTPS
-            sameSite: 'none'
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
         });
         return res.json({ accessToken }); // to store in memory 
     } catch (err) {
