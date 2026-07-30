@@ -14,7 +14,12 @@ const register = async (req, res) => {
 
         //insert new user into DB
         const {accessToken , refreshToken } =  await createUser (req.body.name, req.body.email, passwordHash);
-        res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: ms('7d') });
+        res.cookie('jwt', refreshToken, {
+            httpOnly: true,
+            maxAge: ms('7d') ,
+            secure: true, // true only over HTTPS
+            sameSite: 'none'
+        });
         return res.json({ accessToken }); // to store in memory 
     } catch (err) {
         res.status(500).json({ message: err.message });
