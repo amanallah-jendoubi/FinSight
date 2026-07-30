@@ -43,6 +43,7 @@ app.use(cors({
   credentials: true
 }));
 console.log(process.env.FRONTEND_URL);
+ console.log('ghg');
 
 //built-in middleware for json requests
 app.use(express.json());
