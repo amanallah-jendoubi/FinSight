@@ -51,12 +51,17 @@ The entire application is containerized with Docker: it can be started easily us
 
 ## Tech Stack
 
-* Frontend: React.js / Vite + charting library (Chart.js or Recharts)
-* Backend: Node.js/Express (REST API + WebSocket)
-* AI service: Python (scikit-learn) for automatic categorization
-* Database: PostgreSQL
-* Authentication: JWT (access token + refresh token)
-* Containerization: Docker 
+[![React][React.js]][React-url]
+[![Vite][Vite.js]][Vite-url]
+[![Tailwind CSS][Tailwind.css]][Tailwind-url]
+[![Node.js][Node.js]][Node-url]
+[![Express][Express.js]][Express-url]
+[![PostgreSQL][PostgreSQL.io]][PostgreSQL-url]
+[![FastAPI][FastAPI.io]][FastAPI-url]
+[![scikit-learn][ScikitLearn.org]][ScikitLearn-url]
+[![Docker][Docker.com]][Docker-url]
+[![JWT][JWT.io]][JWT-url]
+[![Socket.io][SocketIO.io]][SocketIO-url]
 
 <p align="right">(<a href="#finsight">back to top</a>)</p>
 
@@ -135,3 +140,31 @@ Amen Allah Jendoubi — amanallah.jendoubi@gmail.com — [LinkedIn](https://www.
 Project built as part of an internship at Teamwill.
 
 <p align="right">(<a href="#finsight">back to top</a>)</p>
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
+[Vite.js]: https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E
+[Vite-url]: https://vitejs.dev/
+[Tailwind.css]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
+[Tailwind-url]: https://tailwindcss.com/
+[Node.js]: https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white
+[Node-url]: https://nodejs.org/
+[Express.js]: https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white
+[Express-url]: https://expressjs.com/
+[PostgreSQL.io]: https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white
+[PostgreSQL-url]: https://www.postgresql.org/
+[Python.org]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
+[Python-url]: https://www.python.org/
+[FastAPI.io]: https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white
+[FastAPI-url]: https://fastapi.tiangolo.com/
+[ScikitLearn.org]: https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white
+[ScikitLearn-url]: https://scikit-learn.org/
+[Docker.com]: https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white
+[Docker-url]: https://www.docker.com/
+[JWT.io]: https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white
+[JWT-url]: https://jwt.io/
+[SocketIO.io]: https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=white
+[SocketIO-url]: https://socket.io/
