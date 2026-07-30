@@ -36,6 +36,9 @@ FinSight is a personal finance management (PFM) web app that helps users track t
 
 The entire application is containerized with Docker: it can be started easily using only Docker Compose, with no complex manual setup needed.
 
+> The database conceptual model (MCD) is available at `backend/finSight.loo` and can be opened with Looping.
+
+
 ## Features
 
 * **Authentication and user management** — sign-up, secure login via JWT (refresh token rotation) insuring private financial space per user.
@@ -70,6 +73,10 @@ The entire application is containerized with Docker: it can be started easily us
 ### Prerequisites
 
 * [Docker Desktop](https://docs.docker.com/desktop/) installed on your machine.
+
+
+> **Windows note:** if you run Docker Desktop through WSL2, file-watching for hot reload (nodemon on the backend, Vite HMR on the frontend) can fall back to polling mode due to WSL2 file system event limitations, which may make reload slightly slower. 
+
 
 ### Environment Variables
 
